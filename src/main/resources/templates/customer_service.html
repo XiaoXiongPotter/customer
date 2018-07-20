@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" 
+  href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <style type="text/css">
+    	html,body{
+    		height: 100%;
+    		width: 100%;
+    	}
+        .talk_con{
+            width:calc(100%);
+            border:1px solid #666;
+            /* margin:50px auto 0; */
+            background:#f9f9f9;
+            height: calc(100%);
+        }
+        .talk_box{
+        	padding-bottom: 45px;
+        	overflow-y: hidden;
+        	height: 100%;
+        }
+        .talk_show{
+        	float: left;
+            width:calc(100%);
+            border:1px solid #666;
+            background:#fff;
+            overflow:auto;
+            height: 100%;
+            padding-bottom: 45px;
+        }
+        .m-input-form{
+        	position: fixed;
+        	width: 100%;
+        	height:45px;
+        	bottom:0;
+        }
+        .talk_input{
+            width:calc(80%);
+            margin:0 0 0 0;
+			float: left;            
+        }
+        textarea{
+        	width: 100%;
+			height: 45px;
+			padding: 0;
+			line-height: 19px;
+			font-size: 14px !important;
+			box-sizing: border-box;
+			border-width: 1;
+			background-color: transparent;
+			resize: none;
+			outline: 0;
+			overflow: auto;
+			color: #333;
+			-webkit-touch-callout: default;
+			word-break: break-all;
+        }
+        .m-input-btn{
+        	float: left;
+        	width: 20%;
+        	
+        }
+        .btn send-btn J_SendMessageButton{
+        	margin-bottom: 0;
+        }
+        .whotalk{
+            width:80px;
+            height:30px;
+            float:left;
+            outline:none;
+        }
+        .talk_word{
+            width:420px;
+            height:26px;
+            padding:0px;
+            float:left;
+            margin-left:10px;
+            outline:none;
+            text-indent:10px;
+        }        
+        .talk_sub{
+            width:56px;
+            height:30px;
+            float:left;
+            margin-left:10px;
+        }
+        .atalk{
+           margin:10px; 
+           
+        }
+        .atalk span{
+            display:inline-block;
+            background:#0181cc;
+            border-radius:10px;
+            color:#fff;
+            padding:5px 10px;
+        }
+        .btalk{
+            margin:10px;
+            text-align:right;
+        }
+        .btalk span{
+            display:inline-block;
+            background:#ef8201;
+            border-radius:10px;
+            color:#fff;
+            padding:5px 10px;
+        }
+    </style>
+
+</head>
+<body>
+    <div class="talk_con">
+	    <div class="talk_box">
+	        <div class="talk_show" id="words">
+	        	<ul>
+    					<!-- 用户的输出语句 -->
+						<li>
+							<div class="layim-chat-user"> <img src="/layui/images/img/tu2.png"> <cite class="layim-chat-user-cite">tml <i>2018-07-13 18:00:37</i> </cite> </div>
+							<div class="layim-chat-user-text">zkolp</div>
+						</li>
+						<!-- 我的输出语句 -->
+						<li class="layim-chat-mine">
+							<div class="layim-chat-user"> <img src="/layui/images/img/tu2.png"> <cite><i>2018-07-12 21:45:11</i>707</cite> </div>
+							<div class="layim-chat-text">ssss</div>
+						</li>
+					</ul>
+	            <div class="atalk"><span id="asay">A说：吃饭了吗？</span></div>
+	            <div class="btalk"><span id="bsay">B说：还没呢，你呢？</span></div>
+	        </div>
+	    </div> 
+    </div>
+    <div	class="m-input-form">
+	        <div class="talk_input">
+	            
+	            <textarea placeholder="" class="textarea J_Field" id="talkwords"></textarea>
+			</div>
+			<div class="m-input-btn J_InputBtn">
+				<button class="btn send-btn J_SendMessageButton"	id="talksub">
+			      发送
+			    </button>
+			</div>
+		</div>
+</body>
+<script src="./layui/jquery-2.1.4.js"></script>
+<script src="./webjars/sockjs-client/1.1.2/sockjs.min.js"></script>
+<script src="./webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
+<script type="text/javascript">  
+	var room;
+	var	seat;
+	$(function(){
+            var Words = $("#words");
+            var Who = $("#who");
+            var TalkWords = $("#talkwords");
+            var TalkSub = $("#talksub");
+          //进入当前页刷新并获取当前用户基本信息同时在后台请求坐席
+            $.ajax({
+            	type: "GET", //GET或POST,
+            	async:false, //默认设置为true，所有请求均为异步请求。
+            	url: "/js/petUser/get_login_petUser",
+            	dataType: "json", //xml、html、script、jsonp、text
+            	success: function(data) {
+            		//平台普通用户>>>>>PFU
+            		room	=	data.sign+data.username;
+            		myInfo	=	data;
+            		console.log("用户信息：>>>>");
+            		console.log(data);
+            		console.log("<<<<<<room赋值");
+            		console.log(room);
+            		var	info='<a href="javascript:;"><img src="/layui/images/img/tu3.png" class="layui-nav-img">'+data.username+'</a>'
+            		+'<dl class="layui-nav-child">'
+              		+'<dd><a href="">基本资料</a></dd>'
+              		+'<dd><a href="">安全设置</a></dd>'
+            		+'</dl>'
+            		$("#myInfo").append(info)
+            	}
+            })
+        	var server = "https://www.dognessnetwork.com/websocket/stomp/socketjs?id="+room;
+        	var socket = new SockJS(server);
+        	server = "https://www.dognessnetwork.com/websocket/stomp";
+        	var socket = new SockJS(server);
+        	var stompClient = Stomp.over(socket);
+			
+        	//接收消息
+        	stompClient.connect({},function(frame) {
+        		  
+        			stompClient.subscribe('/topic/customer/' + room,
+        							function(data) {
+        							var json = JSON.parse(data.body);
+        							console.log("接收到的消息：")
+        							console.log(json)
+        							getMessage(json)
+        							if(json.msgType=='jr'){
+        								layui.use('layim', function(layim){
+        									layim.config({
+        										  brief:true,//开启简约型式
+        										  	init: { mine:myInfo}
+        									});
+        									
+        								});
+        							}
+        								
+        			});
+        		});
+        	//监听socket服务器发送的消息
+        	wesocket = new WebSocket("wss://www.dognessnetwork.com/websocket/stomp?id="+room);
+        	wesocket.onmessage = function(msg) {
+        		console.log("获取到的在线客服列表");
+        		console.log(msg.data);
+        	    //获取到的在线客服列表
+        	    if(msg.data.length<0){
+        	    	//如果客服不在线或在节假日便接入机器人客服
+        	    	
+        	    }else{
+        	    	//提醒正在接入
+        	    }
+        	};
+        	})
+            $("#talksub").click(function(){
+                //定义消息字符串
+                var str = '<div class="btalk"><span>' + $("#talkwords").val() +'</span></div>';
+                if($("#talkwords").val() == ""){
+                     // 消息为空时弹窗
+                    alert("消息不能为空");
+                    return;
+                }
+                /* if($("#who").val() == 0){
+                	console.log("A说")
+                    //如果Who.value为0n那么是 A说
+                    str = '<div class="atalk"><span>A说 :' + $("#talkwords").val() +'</span></div>';
+                }
+                else{
+                	
+                    str = '<div class="btalk"><span>' + $("#talkwords").val() +'</span></div>' ;  
+                } */
+                //# 将之前的内容与要发的内容拼接好 提交
+                console.log(str)
+                	send();
+                
+            })
+            //enter事件
+		    $(window).keydown(function(event){
+				  if(event.keyCode ==13){
+					  send();
+					  }
+				  });
+
+function	getMessage(json){
+	seat	=	json.fromUser;
+	//收到消息后更新消息为送达
+	$.ajax({
+			type: "POST", //GET或POST,
+			async:false, //默认设置为true，所有请求均为异步请求。
+			url: "/js/messageses/updateStatus",
+			data: {
+				sendTime:json.sendTime
+			},
+			dataType: "json", //xml、html、script、jsonp、text
+			success: function(data) {
+				console.log("消息状态更新：");
+				console.log(data);
+				//根据消息状态进行拼接
+				if(data.res=="success"){
+					printKefuMessage(json);
+				}
+				
+			},
+			error:function(){alert('eoo')},
+		});
+}
+       
+function	printKefuMessage(json){
+	seat=json.fromUser;
+	var	kefumessage	=	'<div class="atalk"><span>' + json.content +'</span></div>';
+	 $("#words").append(kefumessage)
+};
+       
+function	send(){
+	console.log("发送数据：")
+	var	content	=	$("#talkwords").val();
+	var str = '<div class="btalk"><span>' + content +'</span></div>';
+	//接入机器人
+	if(seat==null){
+		printUserMessage(str);
+		printUserMessageToRobot(content);
+	}else{
+		 $.ajax({
+				type: "POST", //GET或POST,
+				async:false, //默认设置为true，所有请求均为异步请求。
+				url: "/js/messageses/sendMsg",
+				data: {
+					formUser: room, 
+					toUser : seat,
+					postMessages : content
+				},
+				dataType: "json", //xml、html、script、jsonp、text
+				success: function(data) {
+					printUserMessage(str);
+				},
+				error:function(){alert('eoo')},
+			});
+	}
+
+}
+function	printUserMessage(str){
+	//发送成功后拼接
+	$("#words").append(str);
+	//移除输入框内的东西
+	$("#talkwords").val("");
+}
+function	printUserMessageToRobot(content){
+	$.ajax({
+		type: "POST", //GET或POST,
+		async:false, //默认设置为true，所有请求均为异步请求。
+		url: "/js/robot/get_message_robot",
+		data: {
+			content: content
+		},
+		dataType: "json", //xml、html、script、jsonp、text
+		success: function(data) {
+			console.log(data)
+			for(var	i=0;i<data.length;i++){
+				printRobotMessage(data[i].values.text);
+			}
+			
+		},
+		error:function(){alert('eoo')},
+	});
+}
+function	printRobotMessage(str){
+	var	kefumessage	=	'<div class="atalk"><span>' + str +'</span></div>';
+	 $("#words").append(kefumessage)
+}
+</script>
+</html>
