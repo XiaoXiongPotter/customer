@@ -1,0 +1,57 @@
+<aspectj>
+<aspects>
+<aspect name="com.dognessnetwork.customer.controller.json.MessagesesItemJsonController_Roo_Controller"/>
+<aspect name="com.dognessnetwork.customer.repository.CommentRepository_Roo_Jpa_Repository"/>
+<aspect name="com.dognessnetwork.customer.controller.json.ChatRoomsItemJsonController_Roo_JSON"/>
+<aspect name="com.dognessnetwork.customer.domain.Comment_Roo_ToString"/>
+<aspect name="com.dognessnetwork.customer.controller.json.WebSocketPetUsersJsonController_Roo_Controller"/>
+<aspect name="com.dognessnetwork.customer.controller.json.MessagesesCollectionJsonController_Roo_JSON"/>
+<aspect name="com.dognessnetwork.customer.domain.Messages_Roo_ToString"/>
+<aspect name="com.dognessnetwork.customer.controller.json.ChatRoomJsonMixin_Roo_JSONMixin"/>
+<aspect name="com.dognessnetwork.customer.dto.Msg_Roo_DTO"/>
+<aspect name="com.dognessnetwork.customer.dto.PetUserBase_Roo_DTO"/>
+<aspect name="com.dognessnetwork.customer.repository.MessagesRepositoryCustom_Roo_Jpa_Repository_Custom"/>
+<aspect name="com.dognessnetwork.customer.domain.ChatRoom_Roo_ToString"/>
+<aspect name="com.dognessnetwork.customer.service.impl.ChatRoomServiceImpl_Roo_Service_Impl"/>
+<aspect name="com.dognessnetwork.customer.domain.Comment_Roo_Equals"/>
+<aspect name="com.dognessnetwork.customer.config.SpringDataJpaDetachableRepositoryConfiguration_Roo_Jpa_Repository_Configuration"/>
+<aspect name="com.dognessnetwork.customer.service.impl.MessagesServiceImpl_Roo_Service_Impl"/>
+<aspect name="com.dognessnetwork.customer.controller.json.CommentsCollectionJsonController_Roo_Controller"/>
+<aspect name="com.dognessnetwork.customer.controller.json.CommentsItemJsonController_Roo_Controller"/>
+<aspect name="com.dognessnetwork.customer.controller.json.MessagesesItemJsonController_Roo_JSON"/>
+<aspect name="com.dognessnetwork.customer.config.WebMvcConfiguration_Roo_WebMvcConfiguration"/>
+<aspect name="com.dognessnetwork.customer.controller.json.CommentJsonMixin_Roo_JSONMixin"/>
+<aspect name="com.dognessnetwork.customer.repository.ChatRoomRepositoryImpl_Roo_Jpa_Repository_Impl"/>
+<aspect name="com.dognessnetwork.customer.controller.json.CommentDeserializer_Roo_EntityDeserializer"/>
+<aspect name="com.dognessnetwork.customer.repository.ChatRoomRepositoryCustom_Roo_Jpa_Repository_Custom"/>
+<aspect name="com.dognessnetwork.customer.controller.json.MessagesesCollectionJsonController_Roo_Controller"/>
+<aspect name="com.dognessnetwork.customer.dto.ChatMessage_Roo_DTO"/>
+<aspect name="com.dognessnetwork.customer.controller.json.WebSocketPetUsersJsonController_Roo_JSON"/>
+<aspect name="com.dognessnetwork.customer.controller.json.ChatRoomDeserializer_Roo_EntityDeserializer"/>
+<aspect name="com.dognessnetwork.customer.controller.json.MessagesDeserializer_Roo_EntityDeserializer"/>
+<aspect name="com.dognessnetwork.customer.config.jackson.DomainModelModule_Roo_DomainModelModule"/>
+<aspect name="com.dognessnetwork.customer.service.impl.CommentServiceImpl_Roo_Service_Impl"/>
+<aspect name="com.dognessnetwork.customer.controller.json.ChatRoomsItemJsonController_Roo_Controller"/>
+<aspect name="com.dognessnetwork.customer.domain.Comment_Roo_JavaBean"/>
+<aspect name="com.dognessnetwork.customer.repository.MessagesRepository_Roo_Jpa_Repository"/>
+<aspect name="com.dognessnetwork.customer.domain.ChatRoom_Roo_Jpa_Entity"/>
+<aspect name="com.dognessnetwork.customer.domain.ChatRoom_Roo_Equals"/>
+<aspect name="com.dognessnetwork.customer.controller.json.CommentsCollectionJsonController_Roo_JSON"/>
+<aspect name="com.dognessnetwork.customer.controller.json.CommentsItemJsonController_Roo_JSON"/>
+<aspect name="com.dognessnetwork.customer.domain.ChatRoom_Roo_JavaBean"/>
+<aspect name="com.dognessnetwork.customer.controller.json.ChatRoomsCollectionJsonController_Roo_Controller"/>
+<aspect name="com.dognessnetwork.customer.domain.Messages_Roo_Jpa_Entity"/>
+<aspect name="com.dognessnetwork.customer.repository.ChatRoomRepository_Roo_Jpa_Repository"/>
+<aspect name="com.dognessnetwork.customer.service.api.CommentService_Roo_Service"/>
+<aspect name="com.dognessnetwork.customer.domain.Messages_Roo_JavaBean"/>
+<aspect name="com.dognessnetwork.customer.service.api.ChatRoomService_Roo_Service"/>
+<aspect name="com.dognessnetwork.customer.domain.Messages_Roo_Equals"/>
+<aspect name="com.dognessnetwork.customer.controller.json.ChatRoomsCollectionJsonController_Roo_JSON"/>
+<aspect name="com.dognessnetwork.customer.domain.Comment_Roo_Jpa_Entity"/>
+<aspect name="com.dognessnetwork.customer.service.api.MessagesService_Roo_Service"/>
+<aspect name="com.dognessnetwork.customer.repository.CommentRepositoryCustom_Roo_Jpa_Repository_Custom"/>
+<aspect name="com.dognessnetwork.customer.repository.MessagesRepositoryImpl_Roo_Jpa_Repository_Impl"/>
+<aspect name="com.dognessnetwork.customer.repository.CommentRepositoryImpl_Roo_Jpa_Repository_Impl"/>
+</aspects>
+</aspectj>
+

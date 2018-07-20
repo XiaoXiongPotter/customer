@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="zh"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="zh"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="zh"> <![endif]-->
+<!--[if gt IE 8]><!--> 
+<html class="no-js" lang="zh"> 
+<!--<![endif]-->
+<head>
+<meta name="viewport" content="width=device-width">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+<meta charset="UTF-8">
+<meta name="description" content="">
+<meta name="keywords" content="">
+<title>宠联网客服</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<link rel="stylesheet" href="/layui/css/layui.css">
+<style type="text/css">
+	.chat-body{
+		position: absolute;
+		background-color: red;
+		top: 80px;
+		left: 200px;
+	    right: 0;
+	    bottom: 44px;
+	    z-index: 998;
+	    width: auto;
+	    overflow: hidden;
+	    box-sizing: border-box;
+	}
+	.user-info-box{
+		background-color: green;
+		float:left;
+		width: 30%;
+		height: 100%;
+		overflow-y:hidden; 
+	}
+	.chat-box{
+		background-color: gray;
+		float:left;
+		width: 70%;
+		height: 100%;
+		bottom:0;
+	}
+	.title{
+		height: 10%;
+	    border-bottom: none;
+	    background-color: #F8F8F8;
+	    background-color: rgba(245,245,245,.7);
+	        padding: 0 80px 0 20px;
+	    line-height: 10%;
+	    border-bottom: 1px solid #eee;
+	    font-size: 14px;
+	    color: #333;
+	    overflow: hidden;
+	    background-color: #F8F8F8;
+	    border-radius: 2px 2px 0 0;
+	}
+	.im-chat-box{
+		height: 100%;
+		background-color: red;
+		box-sizing: content-box;
+	}
+	.chat-show{
+		height: 90%;
+		background-color: buttonface;
+	}
+	.chat-main{
+		height: 80%;
+		/* background-color: lime; */
+	}
+	.chat-footer{
+		
+		width:100%;
+		height: 20%;
+		background-color: white; 
+	}
+	.chat-tool{
+		height: 20%;
+	}
+	.chat-textarea{
+		float: left;
+		height: auto;
+		width:80%;
+	    line-height: 100%;
+	    padding: 6px 10px;
+	    resize: vertical;
+	}
+	textarea{
+		
+		width:100%;
+		height: auto;
+	    line-height: 20px;
+	    padding: 6px 10px;
+	    resize: vertical;
+	}
+	.chat-bottom{
+		float: left;
+		width:92px;
+		margin-left: 20px;
+		margin-bottom: 0;
+	}
+	.sub{
+		top: 10%;
+		left: 10%;
+		width:100%;
+		height: 60%;
+	}
+	.chat-send{
+		
+		width: 92px;
+		height: 38px;
+		bottom:0;
+		
+	}
+	
+	.layim-chat-main ul .layim-chat-mine{text-align: right; padding-left: 0; padding-right: 60px;}
+	.layim-chat-main ul li{position: relative; font-size: 0; margin-bottom: 10px; padding-left: 60px; min-height: 68px;}
+	.layim-chat-mine .layim-chat-user cite{
+	left: auto;
+    right: 60px;
+    text-align: right;
+	    position: absolute;
+	    top: -2px;
+	    width: 500px;
+	    line-height: 24px;
+	    font-size: 12px;
+	    white-space: nowrap;
+	    color: #999;
+	    font-style: normal;
+	}
+	.layim-chat-mine .layim-chat-text{
+    background-color: #5FB666;
+    position: relative;
+    line-height: 22px;
+    margin-top: 25px;
+    padding: 8px 15px;
+    border-radius: 3px;
+    word-break: break-all;
+        display: inline-block;
+    vertical-align: top;
+    font-size: 14px;
+	}
+	.layim-chat-user{
+		position: absolute;
+		left: auto;
+    	right: 3px;
+	}
+	.layim-chat-user img{
+		width: 40px;
+	    height: 40px;
+	    border-radius: 100%;
+	}
+	img{
+		border: none;
+		vertical-align: middle;
+	}
+	.layim-chat-mine .layim-chat-text:after{
+		left: auto;
+	    right: -10px;
+	    border-top-color: #5FB878;
+	}
+	.layim-chat-text:after{
+		content: '';
+	    position: absolute;
+	    left: -10px;
+	    top: 13px;
+	    width: 0;
+	    height: 0;
+	    border-style: dashed;
+	    border-color: transparent;
+	    overflow: hidden;
+	    border-width: 10px;
+	    border-top-style: solid;
+	    border-top-color: #e2e2e2;
+	}
+	.layim-chat-mine .layim-chat-user cite i{
+		padding-left: 0;
+    	padding-right: 15px;
+    	font-style: normal;
+	}
+	.layui-btn{
+		background-color:#5FB878;
+	}
+	.layim-chat-user{
+		    position: absolute;
+		    left: 3px;
+		    display: inline-block;
+		    vertical-align: top;
+		    font-size: 14px;
+	}
+	.layim-chat-user-text{
+		position: relative;
+	    line-height: 22px;
+	    margin-top: 25px;
+	    padding: 8px 15px;
+	    padding-top: 8px;
+	    padding-right: 15px;
+	    padding-bottom: 8px;
+	    padding-left: 15px;
+	    background-color: #e2e2e2;
+	    border-radius: 3px;
+	    border-top-left-radius: 3px;
+	    border-top-right-radius: 3px;
+	    border-bottom-right-radius: 3px;
+	    border-bottom-left-radius: 3px;
+	    display: inline-block;
+	    vertical-align: top;
+	    font-size: 14px;
+	    color: #333;
+	    word-break: break-all;
+	}
+	.layim-chat-user-cite{
+		position: absolute;
+	    left: 60px;
+	    top: -2px;
+	    width: 500px;
+	    line-height: 24px;
+	    font-size: 12px;
+	    white-space: nowrap;
+	    color: #999;
+	    text-align: left;
+	    font-style: normal;
+	}
+	.layim-chat-user-cite i{
+		padding-left: 15px;
+    	font-style: normal;
+	}
+	.layim-chat-user-text:after{
+		content: '';
+	    position: absolute;
+	    left: -10px;
+	    top: 13px;
+	    width: 0;
+	    height: 0;
+	    border-style: dashed;
+	    border-top-style: solid;
+	    border-right-style: dashed;
+	    border-bottom-style: dashed;
+	    border-left-style: dashed;
+	    border-color: transparent;
+	    border-top-color: #e2e2e2;
+	    border-right-color: transparent;
+	    border-bottom-color: transparent;
+	    border-left-color: transparent;
+	    overflow: hidden;
+	    overflow-x: hidden;
+	    overflow-y: hidden;
+	    border-width: 10px;
+	    border-top-width: 10px;
+	    border-right-width: 10px;
+	    border-bottom-width: 10px;
+	    border-left-width: 10px;
+	    border-top-style: solid;
+	    border-top-color: #e2e2e2;
+	}
+	.chat-textarea textarea{
+		display: block;
+	    width: 100%;
+	    padding: 5px 0 0 0;
+	        padding-top: 5px;
+    padding-right: 0px;
+    padding-bottom: 0px;
+    padding-left: 0px;
+	    height: 68px;
+	    line-height: 20px;
+	    border: none;
+	    overflow: auto;
+	    overflow-x: auto;
+    overflow-y: auto;
+	    resize: none;
+	    background: none;
+	    background-image: none;
+    background-position-x: initial;
+    background-position-y: initial;
+    background-size: initial;
+    background-repeat-x: initial;
+    background-repeat-y: initial;
+    background-attachment: initial;
+    background-origin: initial;
+    background-clip: initial;
+    background-color: initial;
+	    border-top-color: initial;
+    border-top-style: none;
+    border-top-width: initial;
+    border-right-color: initial;
+    border-right-style: none;
+    border-right-width: initial;
+    border-bottom-color: initial;
+    border-bottom-style: none;
+    border-bottom-width: initial;
+    border-left-color: initial;
+    border-left-style: none;
+    border-left-width: initial;
+    border-image-source: initial;
+    border-image-slice: initial;
+    border-image-width: initial;
+    border-image-outset: initial;
+    border-image-repeat: initial;
+	}
+</style>
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+  <div class="layui-header">
+    <div class="layui-logo"><img alt="宠联网客服在线" src="/layui/images/img/logo-index.png"	style="height: 80px;width: 200px"></div>
+    <!-- 头部区域（可配合layui已有的水平导航） -->
+    <ul class="layui-nav layui-layout-left">
+      <li class="layui-nav-item"><a href="">用户接入</a></li>
+      <li class="layui-nav-item"><a href="">客服管理</a></li>
+      <li class="layui-nav-item">
+        <a href="javascript:;">其它系统</a>
+        <dl class="layui-nav-child">
+          <dd><a href="">邮件管理</a></dd>
+          <dd><a href="">消息管理</a></dd>
+          <dd><a href="">授权管理</a></dd>
+        </dl>
+      </li>
+    </ul>
+    <ul class="layui-nav layui-layout-right">
+      <li class="layui-nav-item"	id="myInfo">
+        <!-- <a href="javascript:;">
+          <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
+          贤心
+        </a>
+        <dl class="layui-nav-child">
+          <dd><a href="">基本资料</a></dd>
+          <dd><a href="">安全设置</a></dd>
+        </dl> -->
+      </li>
+      <li class="layui-nav-item"	id="state-info">
+      
+      <a href="http://192.168.0.197:8088/logout">退了</a></li>
+    </ul>
+  </div>
+  
+  <div class="layui-side layui-bg-black">
+    <div class="layui-side-scroll">
+      <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+      <ul class="layui-nav layui-nav-tree"  lay-filter="test">
+        <li class="layui-nav-item layui-nav-itemed">
+          <a class="" href="javascript:;">待接入</a>
+          <dl class="layui-nav-child"	id="djr">
+            <!-- <dd><a href="/chat/room">用户1</a></dd>
+            <dd><a href="javascript:;"	onclick="">列表二</a></dd>
+            <dd><a href="javascript:;">列表三</a></dd>
+            <dd><a href="">超链接</a></dd> -->
+          </dl>
+        </li>
+        <li class="layui-nav-item">
+          <a href="javascript:;">在线用户</a>
+          <dl class="layui-nav-child"	id="userOnline">
+          
+          </dl>
+        </li>
+        <li class="layui-nav-item">
+          <a href="javascript:;">正在接待</a>
+          <dl class="layui-nav-child"	id="Receiving">
+          
+          </dl>
+        </li>
+      </ul>
+    </div>
+  </div>
+  
+  <div class="chat-body">
+    <!-- 左侧显示用户信息和相关设备信息 -->
+    <div	class="user-info-box">
+    	<div	class="user"></div>
+    	<div	class="device"></div>
+    </div>
+    <!-- 右侧显示聊天框 -->
+    <div	class="chat-box">
+    	<div	class="title"></div>
+    	<div	class="content"></div>
+    	<div	class="im-chat-box">
+    		<div	class="chat-show">
+    			<div	class="chat-main">
+    			<div	class="layim-chat-main"	id="printMsg">
+    				<ul>
+    					<!-- 用户的输出语句 -->
+						<li>
+							<div class="layim-chat-user"> <img src="/layui/images/img/tu2.png"> <cite class="layim-chat-user-cite">tml <i>2018-07-13 18:00:37</i> </cite> </div>
+							<div class="layim-chat-user-text">zkolp</div>
+						</li>
+						<!-- 我的输出语句 -->
+						<li class="layim-chat-mine">
+							<div class="layim-chat-user"> <img src="/layui/images/img/tu2.png"> <cite><i>2018-07-12 21:45:11</i>707</cite> </div>
+							<div class="layim-chat-text">ssss</div>
+						</li>
+					</ul>
+    			</div>
+    			</div>
+    			<div	class="chat-footer">
+    				<div class="layui-unselect layim-chat-tool chat-tool"	 data-json="%7B%22name%22%3A%22tml%22%2C%22type%22%3A%22friend%22%2C%22avatar%22%3A%22%2Flayui%2Fimages%2Fimg%2Ftu2.png%22%2C%22id%22%3A1%7D"><span class="layui-icon layim-tool-face" title="选择表情" layim-event="face"></span></div>
+    				<div	class="sub">
+    					<div	class="chat-textarea">
+	    					<textarea	id="messages"></textarea>
+	    				</div>
+	    				<div	class="chat-bottom">
+	    					<div	class="chat-send">
+	    						<button class="layui-btn layui-btn-fluid "	id="send">发送</button>
+	    					</div>
+	    				</div>
+    				</div>
+    				
+    			</div>
+    		</div>
+    	</div>
+    </div>
+  </div>
+  
+  <div class="layui-footer">
+    <!-- 底部固定区域 -->
+    ©2018-04-17 www.dognessnetwork.com Inc.All rights reserved 粤ICP备18041770号-1.  网站建设：广东多尼斯网络科技有限公司
+  </div>
+</div>
+<script src="/layui/layui.js"></script>
+<script src="/layui/jquery-2.1.4.js"></script>
+<script src="./js/message.js"></script>
+<script src="/webjars/sockjs-client/1.1.2/sockjs.min.js"></script>
+<script src="/webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
+<script>
+	//JavaScript代码区域
+	layui.use('element', function(){
+	  var element = layui.element;
+	  
+	});
+	$(".chat-body").fadeToggle();
+	//获取当前用户基本信息
+	var	petUser;
+	var room;
+	var	seat;
+	var	myInfo;
+	var	message;
+	$(function	(){
+		 $.ajax({
+			type: "POST", //GET或POST,
+			async:true, //默认设置为true，所有请求均为异步请求。
+			url: "http://192.168.0.197:8088/users/query_by_username",
+			data:{username:"lisisi"},
+			dataType: "json", //xml、html、script、jsonp、text
+			crossDomain: true,
+			xhrFields:{
+		        withCredentials:true
+		    },
+			success: function(data) {
+				//获取到正在请求的用户
+				console.log(data)
+				seat="CSD"+data.data.username;
+				var	info='<a href="javascript:;"><img src="/layui/images/img/tu2.png" class="layui-nav-img">'+data.data.username+'</a>'
+				+'<dl class="layui-nav-child">'
+          		+'<dd><a href="">基本资料</a></dd>'
+          		+'<dd><a href="">安全设置</a></dd>'
+        		+'</dl>'
+        		$("#myInfo").append(info)
+			},error:function(e){
+				console.log('>>>>>>>>>>')
+				console.log(e)
+				console.log('>>>>>>>>>>')
+				}
+			
+			}); 
+	$.ajax({
+		type: "GET", //GET或POST,
+		async:false, //默认设置为true，所有请求均为异步请求。
+		url: "/js/petUser/get_customer",
+		dataType: "text", //xml、html、script、jsonp、text
+		success: function(data) {
+			console.log("客服基本信息当前>>>>")
+			console.log(data);
+			seat = "CSD"+data/* data.sign+data.username */;
+			myInfo	=	data;
+			console.log(data)
+			console.log("用户基本信息当前ID>>>>"+data.id)
+			var	info=	'<a href="javascript:;"><img src="/layui/images/img/tu2.png" class="layui-nav-img">'+data+'</a>'
+					+	'<dl class="layui-nav-child">'
+	          		+	'<dd><a href="">基本资料</a></dd>'
+	          		+	'<dd><a href="">安全设置</a></dd>'
+	        		+	'</dl>'
+        	$("#myInfo").append(info)
+				/* if(data.sign.length>0){
+					getPetUserList(data.sign)
+				} */
+				
+			},
+			error:function(){console.log("error")},
+	}); 
+	//接收消息
+	console.log("接收坐席号："+seat);
+	var	socketService	=	getSockJS();
+	//上线
+	var socket = new SockJS(socketService+"/socketjs?id="+seat);
+	//创建监听客户端
+	var stompClient = Stomp.over(new SockJS(socketService));
+	//监听socket服务器发送的消息
+	wesocket = new WebSocket(getWeSocket()+"?id="+seat);
+	wesocket.onmessage = function(msg) {
+		console.log("获取到的在线用户列表");
+		var msgdata=['PFUtml','PFUtml']
+		console.log(msg);
+		var json = JSON.parse(msg.data);
+		console.log(json);
+		var	len	=	json.pfu.length;
+    	//获取到的在线用户列表
+    	if(len>0){
+        	//调用后台查询那些是没有接入的
+        	get_petUser_is_accessing(json.pfu)
+        } else {
+            	//没有请求用户的情况
+        }
+            
+	};
+	stompClient.connect({},function(frame) {
+		stompClient.subscribe('/topic/customer/' + seat,
+		function(data) {
+			var json = JSON.parse(data.body);
+			console.log("接收到的数据")
+			console.log(json)
+			//petUser=json;
+			if(json.content=='人工'){
+				//var result = '<dd class=""><a href="#"	onclick="jr(this.id)"	id="'+json.fromUser+'">'+json.userName+'</a></dd>'
+				$("#djr").append($('#'+json.fromUser).clone());
+				$('.'+json.fromUser).detach();
+				console.log("转移")
+				//让用户在当前客服下排队
+				//queue(json.fromUser)
+			}else{
+				getMessage(json)
+			}
+		});
+	});
+		// 向服务器发起websocket连接并发送CONNECT帧
+		/* stompClient.connect(
+		    {},
+		function connectCallback (frame) {
+		    // 连接成功时（服务器响应 CONNECTED 帧）的回调方法
+		    var result ='<button class="layui-btn">在线<span class="layui-badge-dot layui-bg-orange"></span></button>'
+		    	$("#state-info").append(result)
+		        console.log('已连接【' + frame + '】');
+		        stompClient.subscribe('/topic/customer/' + seat, function (data) {
+		        	var json = JSON.parse(data.body);
+					console.log("接收到的数据")
+					console.log(json)
+					petUser=json;
+					if(json.msgId==null){
+						var result = '<dd><a href="#"	onclick="jr(this.id)"	id="'+json.fromUser+'">'+json.userName+'</a></dd>'
+						$("#djr").append(result)
+						//让用户在当前客服下排队
+						queue(json.fromUser)
+					}else{
+						getMessage(json)
+					}
+		        });
+		    },
+		function errorCallBack (error) {
+		    // 连接失败时（服务器响应 ERROR 帧）的回调方法
+		        document.getElementById("state-info").innerHTML = "连接失败";
+		        console.log('连接失败【' + error + '】');
+		    }
+		);  */
+	})
+	
+
+	  
+	/* //聊天消息通道
+	stompClient.connect({},function(frame) {
+			stompClient.subscribe('/topic/chat/'+room,
+							function(data) {
+							var json = JSON.parse(data.body);
+							console.log("聊天消息通道")
+							console.log(json)
+							//petUser=json;
+							
+								
+			});
+	}); */
+	//判断是否接入
+	function	get_petUser_is_accessing(e){
+		console.log("是否接入");
+		console.log(e);
+		$.ajax({
+			type: "POST", //GET或POST,
+			async:false, //默认设置为true，所有请求均为异步请求。
+			url: "/js/chatrooms/get_petUser_is_accessing",
+			data:{array:e},
+			dataType: "json", //xml、html、script、jsonp、text
+			success: function(data) {
+				//获取到正在请求的用户
+				console.log(data)
+				for(var	i=0;i<data.length;i++){
+					
+					var result = '<dd class="PFU'+data[i]+'"><a href="#"	onclick="jr(this.id)"	id="PFU'+data[i]+'">'+data[i]+'</a></dd>'
+					$("#userOnline").append(result)
+				}
+				
+			},
+			error:function(){},
+		});
+	}
+	//排队
+	/* function	queue(id){
+			$.ajax({
+				type: "GET", //GET或POST,
+				async:false, //默认设置为true，所有请求均为异步请求。
+				url: "/js/petusers/queue?id="+id,
+				dataType: "json", //xml、html、script、jsonp、text
+				success: function(data) {
+					
+				},
+				error:function(){},
+			}); 
+		} */
+	var	sendData;
+	var	tousername;
+	//接入操作
+	function	jr(id){
+		console.log("用户ID>>>")
+		console.log(id)
+		tousername=id;
+		//接入用户，查询用户信息
+		$.ajax({
+				type: "POST", //GET或POST,
+				async:false, //默认设置为true，所有请求均为异步请求。
+				url: "/js/chatrooms/customer_access",
+				data:{
+					petUser	:	id,
+					seat	:	seat
+					},
+				dataType: "json", //xml、html、script、jsonp、text
+				success: function(data) {
+					console.log(data)
+					if(data.code==0){
+						room	=	data.sign;
+						PETUSER	=	data;
+						$('#PFU'+data.res.username).detach();
+						var result = '<dd class="'+data.res.username+'"><a href="#"	onclick="switchUser(this.id)"	id="'+data.res.username+'">'+data.res.username+'</a></dd>'
+						$("#Receiving").append(result);
+						
+					}else{
+						var	content	=	"接入失败";
+						alertInfo(content);
+					}
+					
+				},
+				error:function(){alert('eoo')},
+			});
+		$(".chat-body").fadeToggle(1);
+		/* layui.use('layim', function(layim){
+					layim.config({
+						  brief:true,//开启简约型式
+						  	init: { mine:myInfo}
+					});
+					
+					layim.chat({
+						  name: PETUSER.username//名称
+						  ,type: 'friend' //聊天类型
+						  ,avatar: PETUSER.avatar //头像
+						  ,id: PETUSER.id //好友id
+						});
+					
+						layim.on('sendMessage', function(res){
+							  var mine = res.mine; //包含我发送的消息及我的信息
+							  var to = res.to; //对方的信息
+							  console.log("发送");
+							  console.log(res.mine);
+							  console.log(petUser.id);
+							  sendData=res.mine
+							  //调用消息发送
+							  send()
+						  });
+				}); */
+		/* //接入的同时发送一个我当前所在的房间号
+		response() */
+		
+	}
+	/* 
+	获取带接入用户列表的信息 'A'.charCodeAt()-64
+	/js/petusers/getPetUserList
+	*/
+	/* function	getPetUserList(ids){
+		console.log(ids)
+		$.ajax({
+			type: "GET", //GET或POST,
+			async:true, //默认设置为true，所有请求均为异步请求。
+			url: "/js/petusers/getPetUserList?ids="+ids,
+			dataType: "json", //xml、html、script、jsonp、text
+			success: function(data) {
+				console.log(data)
+				for(var	i=0;i<data.length;i++){
+					var result = '<dd><a href="#"	onclick="jr(this.id)"	id="'+data[i].fromUser+'">'+data[i].userName+'</a></dd>'
+					$("#djr").append(result)
+				}
+				
+			},
+			error:function(){alert('eoo')},
+		});
+	} */
+	function	send() {
+		console.log("发送数据：")
+		/* console.log(message) */
+		message	=	$("#messages").val();
+		console.log(message)
+		if(message.length==0){
+			var	content	=	"消息内容不能为空！";
+			alertInfo(content);
+		}else{
+			$.ajax({
+				type: "POST", //GET或POST,
+				async:false, //默认设置为true，所有请求均为异步请求。
+				url: "/js/messageses/sendMsg",
+				data: {
+					formUser: seat, 
+					toUser : /* petUser.fromUser */tousername,
+					postMessages : /* sendData.content */message
+				},
+				dataType: "json", //xml、html、script、jsonp、text
+				success: function(data) {
+					console.log("消息发送结果");
+					console.log(data);
+					if(data.res==1){
+						var	content	=	"消息发送失败";
+						alertInfo(content);
+					}else{
+						//清空输入框拼接
+						$("#messages").val("");
+						printMessage(message)
+					}
+				},
+				error:function(){alert('eoo')},
+			});
+		}
+		 
+	}
+	function	getMessage(json){
+		//seat	=	json.fromUser;
+		printUserMessage(json)
+		/* layui.use('layim', function(layim){
+			
+			layim.getMessage({
+				username: json.userName//消息来源用户名
+			  	,avatar: "/layui/images/img/tu2.png"//消息来源用户头像
+			  	,id: json.msgId  //消息的来源ID（如果是私聊，则是用户id，如果是群聊，则是群组id）
+			  	,type: "friend" //聊天窗口来源类型，从发送消息传递的to里面获取
+			  	,content: json.content //消息内容
+			  	,cid: 0 //消息id，可不传。除非你要对消息进行一些操作（如撤回）
+			  	,mine: false //是否我发送的消息，如果为true，则会显示在右方
+			  	,fromid: json.fromUser//消息的发送者id（比如群组中的某个消息发送者），可用于自动解决浏览器多窗口时的一些问题
+			  	,timestamp: json.sendTime //服务端时间戳毫秒数。注意：如果你返回的是标准的 unix 时间戳，记得要 *1000
+		});
+			}); */
+	}
+	
+	$("#send").click(function(){
+		send();
+	})
+	//enter事件
+	$(window).keydown(function(event){
+		if(event.keyCode ==13){
+			send();
+		}
+	});
+
+	function	printMessage(message){
+		var	mineMsg	=	'<li class="layim-chat-mine">'
+					+	'<div class="layim-chat-user"> <img src="/layui/images/img/tu2.png">'
+					+	'<cite><i>'
+					+	getNowFormatDate()
+					+	'</i>707</cite> </div>'
+					+	'<div class="layim-chat-text">'
+					+	message
+					+	'</div>'
+					+	'</li>';
+		$("#printMsg ul").append(mineMsg);
+	}
+	function	printUserMessage(json){
+		var	userMsg	=	'<li>'
+					+	'<div class="layim-chat-user"> <img src="/layui/images/img/tu2.png"> <cite class="layim-chat-user-cite">'
+					+	json.userName
+					+	'<i>'
+					+	format(json.sendTime)
+					+	'</i> </cite> </div>'
+					+	'<div class="layim-chat-user-text">'
+					+	json.content
+					+	'</div></li>'
+		$("#printMsg ul").append(userMsg);
+	}
+	//切换用户
+	function	switchUser(id){
+		tousername	=	'PFU'+id;
+		$(".chat-body").fadeToggle(1);
+	}
+</script>
+</body>
+</html>
