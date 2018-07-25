@@ -414,11 +414,11 @@
     ©2018-04-17 www.dognessnetwork.com Inc.All rights reserved 粤ICP备18041770号-1.  网站建设：广东多尼斯网络科技有限公司
   </div>
 </div>
-<script src="/layui/layui.js"></script>
-<script src="/layui/jquery-2.1.4.js"></script>
+<script src="./layui/jquery-2.1.4.js"></script>
+<script src="./layui/layui.js"></script>
 <script src="./js/message.js"></script>
-<script src="/webjars/sockjs-client/1.1.2/sockjs.min.js"></script>
-<script src="/webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
+<script src="./webjars/sockjs-client/1.1.2/sockjs.min.js"></script>
+<script src="./webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
 <script>
 	//JavaScript代码区域
 	layui.use('element', function(){
@@ -433,7 +433,7 @@
 	var	myInfo;
 	var	message;
 	$(function	(){
-		 $.ajax({
+		 /* $.ajax({
 			type: "POST", //GET或POST,
 			async:true, //默认设置为true，所有请求均为异步请求。
 			url: "http://192.168.0.197:8088/users/query_by_username",
@@ -459,7 +459,7 @@
 				console.log('>>>>>>>>>>')
 				}
 			
-			}); 
+			});  */
 	$.ajax({
 		type: "GET", //GET或POST,
 		async:false, //默认设置为true，所有请求均为异步请求。
@@ -467,11 +467,10 @@
 		dataType: "text", //xml、html、script、jsonp、text
 		success: function(data) {
 			console.log("客服基本信息当前>>>>")
-			console.log(data);
 			seat = "CSD"+data/* data.sign+data.username */;
 			myInfo	=	data;
 			console.log(data)
-			console.log("用户基本信息当前ID>>>>"+data.id)
+			console.log("用户基本信息当前ID>>>>"+data)
 			var	info=	'<a href="javascript:;"><img src="/layui/images/img/tu2.png" class="layui-nav-img">'+data+'</a>'
 					+	'<dl class="layui-nav-child">'
 	          		+	'<dd><a href="">基本资料</a></dd>'
@@ -485,28 +484,74 @@
 			},
 			error:function(){console.log("error")},
 	}); 
-	//接收消息
-	console.log("接收坐席号："+seat);
-	var	socketService	=	getSockJS();
-	//上线
-	var socket = new SockJS(socketService+"/socketjs?id="+seat);
-	//创建监听客户端
-	var stompClient = Stomp.over(new SockJS(socketService));
-	//监听socket服务器发送的消息
-	wesocket = new WebSocket(getWeSocket()+"?id="+seat);
-	wesocket.onmessage = function(msg) {
-		console.log("获取到的在线用户列表");
-		var msgdata=['PFUtml','PFUtml']
-		console.log(msg);
-		var json = JSON.parse(msg.data);
-		console.log(json);
-		var	len	=	json.pfu.length;
+			
+	var websocket;
+	if ('WebSocket' in window) {
+		websocket = new WebSocket(getWeSocket()+"?uid="+seat);
+	} else if ('MozWebSocket' in window) {
+		websocket = new MozWebSocket(getWeSocket()+seat);
+	} else {
+		websocket = new SockJS(getSockJS()+seat);
+	}
+	websocket.onmessage = function(event) {
+		var data=JSON.parse(event.data);
+		console.log(data)
+		if(data.header.code==6000){
+			console.log("获取到的在线客服列表");
+			console.log(data.data.CSD)
+			console.log("获取到的在线用户列表");
+			console.log(data.data.PFU)
+			if(data.data.PFU.length>0){
+	        	//调用后台查询那些是没有接入的
+	        	get_petUser_is_accessing(data.data.PFU);
+	        } else {
+	            //没有请求用户的情况
+	            console.log("无用户")
+	        }
+		}
+		if(data.header.code==6002){
+			console.log("上线");
+			console.log(data.data);
+			var mycars=new Array(data.data);
+			//调用后台查询那些是没有接入的
+        	get_petUser_is_accessing(mycars);
+		}
+		if(data.header.code==6003){
+			console.log("下线");
+			console.log(data.data);
+		}
+		/* var	len	=	json.length;
     	//获取到的在线用户列表
     	if(len>0){
         	//调用后台查询那些是没有接入的
-        	get_petUser_is_accessing(json.pfu)
+        	get_petUser_is_accessing(json)
         } else {
-            	//没有请求用户的情况
+            //没有请求用户的情况
+            console.log("无用户")
+        } */
+	}
+	/* //接收消息
+	console.log("接收坐席号："+seat);
+	var	socketService	=	getSockJS();
+	//上线
+	var socket = new SockJS(socketService+"/socketjs?uid="+seat);
+	//创建监听客户端
+	var stompClient = Stomp.over(new SockJS(socketService));
+	//监听socket服务器发送的消息
+	wesocket = new WebSocket(getWeSocket()+"?uid="+seat);
+	wesocket.onmessage = function(msg) {
+		console.log("获取到的在线用户列表");
+		console.log(msg);
+		var json = JSON.parse(msg.data);
+		console.log(json);
+		var	len	=	json.length;
+    	//获取到的在线用户列表
+    	if(len>0){
+        	//调用后台查询那些是没有接入的
+        	get_petUser_is_accessing(json)
+        } else {
+            //没有请求用户的情况
+            console.log("无用户")
         }
             
 	};
@@ -528,7 +573,7 @@
 				getMessage(json)
 			}
 		});
-	});
+	}); */
 		// 向服务器发起websocket连接并发送CONNECT帧
 		/* stompClient.connect(
 		    {},

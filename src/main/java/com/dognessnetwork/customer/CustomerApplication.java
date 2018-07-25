@@ -26,6 +26,6 @@ public class CustomerApplication extends SpringBootServletInitializer implements
 	@Override
 	public void customize(ConfigurableEmbeddedServletContainer arg0) {
 		// TODO Auto-generated method stub
-		arg0.setPort(80);
+		arg0.setPort(8080);
 	}
 }

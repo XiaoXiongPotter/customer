@@ -70,31 +70,35 @@ public class CustomerApplicationTests {
 		File	file1	=	new	File(file.getParentFile().getParent()+"/img/123.txt");
 		System.out.println(file1.getParentFile().getPath());*/
 		/**************测试图片上传接口*****************/
-		/*HashMap<String, Object> paramMap = new HashMap<>();
+		//HashMap<String, Object> paramMap = new HashMap<>();
 	
-
-		//文件上传只需将参数中的键指定（默认file），值设为文件对象即可，对于使用者来说，文件上传与普通表单提交并无区别
-		paramMap.put("file", FileUtil.file("E:/Pictures/tupian/dgmyq.jpg"));
-		String result= HttpUtil.post("https://www.dognessnetwork.com/document/image_animal", paramMap);
-		Console.log(result);*/
+		///文件上传只需将参数中的键指定（默认file），值设为文件对象即可，对于使用者来说，文件上传与普通表单提交并无区别
+		//paramMap.put("file", FileUtil.file("E:/Pictures/tupian/dgmyq.jpg"));
+		//paramMap.put("fileName", "A");
+		//paramMap.put("type", "A");
+		//paramMap.put("size",400);
+		//paramMap.put("content", "https://www.dognessnetwork.com/qr=123");
+		//String result= HttpUtil.post("https://www.dognessnetwork.com/document/qrCode_image", paramMap);
+		//String result= HttpUtil.post("http://localhost/document/image_animal", paramMap);
+		//Console.log(result);
 		/***************测试消息服务器接口****************/
-		/*Msg	msg=	new	Msg();
+		Msg	msg=	new	Msg();
 		msg.setContent("707为您服务");
 		msg.setFromUser("707");
 		msg.setToUser("PFUtml");
 		msg.setMsgType("text");
 		msg.setMsgId(1L);
 		msg.setUserName("707");
-		client.customerSend("/tml", msg);*/
+		client.customerSend("/PFUtml", msg);
 		/*Robot	robot	=	new	Robot();
 		Scanner scanner = new Scanner(System.in);
         while (scanner.hasNext()){
             //直接输出机器人的回复
             System.err.println("Ta 对你说 -> " + robot.getMessage(scanner.nextLine()));
         }*/
-		String	res	=	HttpUtil.post("http://192.168.0.197:8088/users/test", "");
+		/*String	res	=	HttpUtil.post("http://192.168.0.197:8088/users/test", "");
     	Console.log("用户信息：");
-    	Console.log(res);
+    	Console.log(res);*/
     	//Console.log(redisService.getStr("SPRING_SECURITY_CONTEXT"));
 		/*Console.log("getId：");
 		Console.log(session.getId());

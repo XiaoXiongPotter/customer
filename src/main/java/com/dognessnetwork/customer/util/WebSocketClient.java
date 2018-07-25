@@ -47,6 +47,8 @@ public class WebSocketClient {
 	@Value("${dgs.ws.server.url}")
 	String url;
 	
+	@Value("${customer.wesocket}")
+    private String wesocket;
 
 	public String getEndPoint() {
 		return endPoint;
@@ -165,7 +167,7 @@ public class WebSocketClient {
 	}
 	
 	public void customerSend(String room,Object	msg) {
-		System.out.println("url:"+"wss://"+getUrl()+getEndPoint());
+		System.out.println("url:"+wesocket);
 		String empty = "";
 		List<Transport> transports = Arrays.asList(new WebSocketTransport(new StandardWebSocketClient()),
 				new RestTemplateXhrTransport(new RestTemplate()));
@@ -179,7 +181,7 @@ public class WebSocketClient {
 			}
 		};
 		stompClient.setMessageConverter(new MappingJackson2MessageConverter());
-		ListenableFuture<StompSession> future = stompClient.connect("wss://"+getUrl()+getEndPoint(), handler, empty);
+		ListenableFuture<StompSession> future = stompClient.connect(wesocket, handler, empty);
 		StompSession session;
 		try {
 			session = future.get();

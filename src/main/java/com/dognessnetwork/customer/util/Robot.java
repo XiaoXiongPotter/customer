@@ -89,7 +89,30 @@ public class Robot {
     	JSONObject	res	=	JSONUtil.parseObj(str);
         return getString(res.getJSONArray("results").toString());
     }
-
+    /**
+     * "inputImage": {
+            "url": "imageUrl"
+        },
+     * @param img
+     * @return
+     */
+    public String getImage(String img){
+        JSONObject  js  =   new JSONObject();
+        JSONObject  perception  =   new JSONObject();
+        JSONObject  inputImage   =   new JSONObject();
+        JSONObject  userInfo    =   new JSONObject();
+        js.put("reqType", 1);
+        inputImage.put("url", img);
+        perception.put("inputImage", inputImage);
+        js.put("perception", perception);
+        userInfo.put("apiKey", API_KEY);
+        userInfo.put("userId", "007");
+        js.put("userInfo",userInfo);
+        
+        String  str =   HttpUtil.post(API_URL, js.toString());
+        JSONObject  res =   JSONUtil.parseObj(str);
+        return getString(res.getJSONArray("results").toString());
+    }
 
     private String getHTML(String url) {
         StringBuffer buffer = new StringBuffer();

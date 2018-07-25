@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="weburl" content="http://www.jq22.com/">
 <title>宠联网人工客服</title>
 <link rel="stylesheet" type="text/css" href="./layui/css/layui.css">
 <link rel="stylesheet" type="text/css" href="./userchat/font_Icon/iconfont.css">
@@ -161,12 +162,15 @@
 
                     </div>
                 </div>
+                
                 <div class="chatBox-send">
-                    <div class="div-textarea" contenteditable="true"></div>
+                    <div class="div-textarea" contenteditable="true" >
+                    </div>
                     <div>
-                        <button id="chat-biaoqing" class="btn-default-styles">
+                        <button  id="chat-biaoqing" class="btn-default-styles">
                             <i class="layui-icon layui-icon-face-smile"></i>
                         </button>
+						
                         <label id="chat-tuxiang" title="发送图片" for="inputImage" class="btn-default-styles">
                             <input type="file" onchange="selectImg(this)" accept="image/jpg,image/jpeg,image/png"
                                    name="file" id="inputImage" class="hidden">
@@ -175,62 +179,46 @@
                         <button id="chat-fasong" class="btn-default-styles"><i class="layui-icon layui-icon-release"></i>
                         </button>
                     </div>
-                    <div class="biaoqing-photo">
-                        <ul>
-                            <li><span class="emoji-picker-image" style="background-position: -9px -18px;"></span></li>
-                            <li><span class="emoji-picker-image" style="background-position: -40px -18px;"></span></li>
-                            <li><span class="emoji-picker-image" style="background-position: -71px -18px;"></span></li>
-                            <li><span class="emoji-picker-image" style="background-position: -102px -18px;"></span></li>
-                            <li><span class="emoji-picker-image" style="background-position: -133px -18px;"></span></li>
-                            <li><span class="emoji-picker-image" style="background-position: -164px -18px;"></span></li>
-                            <li><span class="emoji-picker-image" style="background-position: -9px -52px;"></span></li>
-                            <li><span class="emoji-picker-image" style="background-position: -40px -52px;"></span></li>
-                            <li><span class="emoji-picker-image" style="background-position: -71px -52px;"></span></li>
-                            <li><span class="emoji-picker-image" style="background-position: -102px -52px;"></span></li>
-                            <li><span class="emoji-picker-image" style="background-position: -133px -52px;"></span></li>
-                            <li><span class="emoji-picker-image" style="background-position: -164px -52px;"></span></li>
-                            <li><span class="emoji-picker-image" style="background-position: -9px -86px;"></span></li>
-                            <li><span class="emoji-picker-image" style="background-position: -40px -86px;"></span></li>
-                            <li><span class="emoji-picker-image" style="background-position: -71px -86px;"></span></li>
-                            <li><span class="emoji-picker-image" style="background-position: -102px -86px;"></span></li>
-                            <li><span class="emoji-picker-image" style="background-position: -133px -86px;"></span></li>
-                            <li><span class="emoji-picker-image" style="background-position: -164px -86px;"></span></li>
-                            <li><span class="emoji-picker-image" style="background-position: -9px -120px;"></span></li>
-                            <li><span class="emoji-picker-image" style="background-position: -40px -120px;"></span></li>
-                            <li><span class="emoji-picker-image" style="background-position: -71px -120px;"></span></li>
-                            <li><span class="emoji-picker-image" style="background-position: -102px -120px;"></span>
-                            </li>
-                            <li><span class="emoji-picker-image" style="background-position: -133px -120px;"></span>
-                            </li>
-                            <li><span class="emoji-picker-image" style="background-position: -164px -120px;"></span>
-                            </li>
-                            <li><span class="emoji-picker-image" style="background-position: -9px -154px;"></span></li>
-                            <li><span class="emoji-picker-image" style="background-position: -40px -154px;"></span></li>
-                            <li><span class="emoji-picker-image" style="background-position: -71px -154px;"></span></li>
-                            <li><span class="emoji-picker-image" style="background-position: -102px -154px;"></span>
-                            </li>
-                            <li><span class="emoji-picker-image" style="background-position: -133px -154px;"></span>
-                            </li>
-                            <li><span class="emoji-picker-image" style="background-position: -164px -154px;"></span>
-                            </li>
-                        </ul>
-                    </div>
                 </div>
             </div>
         </div>
     </div>
-
-
-
+<div class="comment">
+<div class="com_form">
+<textarea class="input" id="saytext" name="saytext"></textarea>
+<p>
+</div>
+</div>
 <script src="./userchat/js/jquery.min.js"></script>
-<script src="/layui/layui.js"></script>
+<script src="./layui/layui.js"></script>
 <script src="./js/message.js"></script>
-<script src="./webjars/sockjs-client/1.1.2/sockjs.min.js"></script>
-<script src="./webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
+<script src="./userchat/js/jquery.qqFace.js"></script>
+<script src="/webjars/sockjs-client/1.1.2/sockjs.min.js"></script>
+<script src="/webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
 <script>
     var room;
     var	seat;
     var	kefuList	=	[];
+    var face;
+	$(function(){
+		$('#chat-biaoqing').qqFace({
+			id : 'facebox', 
+			assign:'saytext', 
+			path:'./userchat/img/arclist/'	//表情存放的路径"src/main/resources/static"
+		});
+	});
+	function	showQQFace(){
+		face = $("#saytext").val();
+		$(".div-textarea").html(replace_em(face));
+	}
+	//查看结果
+	function replace_em(str){
+		str = str.replace(/\</g,'&lt;');
+		str = str.replace(/\>/g,'&gt;');
+		str = str.replace(/\n/g,'<br/>');
+		str = str.replace(/\[em_([0-9]*)\]/g,'<img	style="width: 24px;height: 24px;" src="./userchat/img/arclist/$1.gif" border="0" />');
+		return str;
+	}
     $.ajax({
     	   type: "GET", //GET或POST,
     	   async:false, //默认设置为true，所有请求均为异步请求。
@@ -246,7 +234,29 @@
 		      console.log(room);
 		   }
     })
-	var	socketService	=	getSockJS();
+    var websocket;
+	        if ('WebSocket' in window) {
+				websocket = new WebSocket(getWeSocket()+"?uid="+room);
+			} else if ('MozWebSocket' in window) {
+				websocket = new MozWebSocket(getWeSocket()+room);
+			} else {
+				websocket = new SockJS(getSockJS()+room);
+			}
+	        websocket.onmessage = function(event) {
+	        	var data=JSON.parse(event.data);
+	        	console.log(data)
+	        	if(data.header.code==6001){
+	    			console.log("线上客服");
+	    			console.log(data.data);
+	    			kefuList	=	data.data;
+	    			console.log(kefuList);
+	    		}
+	    		if(data.header.code==6003){
+	    			console.log("下线用户");
+	    			console.log(data.data);
+	    		}
+	        }
+	/* var	socketService	=	getSockJS();
 	//上线
 	var socket = new SockJS(socketService+"/socketjs?id="+room);
     //创建监听客户端
@@ -273,7 +283,7 @@
 	    } else {
 	        //提醒正在接入
 	    }
-	};
+	}; */
         
 	function	getMessage(json) {
     	seat	=	json.fromUser;
@@ -297,6 +307,7 @@
         	error:function(){alert('eoo')},
     	});
 	}
+
 	function	send() {
 		console.log("发送数据：")
 		var content = $(".div-textarea").html().replace(/[\n\r]/g, '<br>')
@@ -496,10 +507,10 @@
         event.stopPropagation();//阻止事件
     });
 
-    $(".emoji-picker-image").each(function () {
+   /*  $(".emoji-picker-image").each(function () {
         $(this).click(function () {
             var bq = $(this).parent().html();
-            console.log(bq)
+            console.log(bq);
             $(".chatBox-content-demo").append("<div class=\"clearfloat\">" +
                 "<div class=\"author-name\"><small class=\"chat-date\">2017-12-02 14:26:58</small> </div> " +
                 "<div class=\"right\"> <div class=\"chat-message\"> " + bq + " </div> " +
@@ -511,7 +522,7 @@
                 $("#chatBox-content-demo").scrollTop($("#chatBox-content-demo")[0].scrollHeight);
             });
         })
-    });
+    }); */
 
     //      发送图片
     function selectImg(pic) {
@@ -521,6 +532,15 @@
         var reader = new FileReader();
         reader.onload = function (evt) {
             var images = evt.target.result;
+          	//接入机器人
+    		if(seat==null){
+    			printUserImgToRobot(images.substr(images.indexOf(',') + 1));
+    		}else{
+    			var	res	=	sendImg(images);
+    			if(res.res==0){
+    				printUserMessage(content);
+    			}
+    		}
             $(".chatBox-content-demo").append("<div class=\"clearfloat\">" +
                 "<div class=\"author-name\"><small class=\"chat-date\">2017-12-02 14:26:58</small> </div> " +
                 "<div class=\"right\"> <div class=\"chat-message\"><img src=" + images + "></div> " +
@@ -534,13 +554,30 @@
 
     }
     $(".chatBox-head-two").toggle();
-/* 
-    $(".chatBox-head-one").toggle();
-    
-    $(".chatBox-list").fadeToggle();
-    $(".chatBox-kuang").fadeToggle(); */
-
-
+    //向机器人发图片
+	function	printUserImgToRobot(content){
+		$.ajax({
+			type: "POST", //GET或POST,
+			async:true, //默认设置为true，所有请求均为异步请求。
+			url: "./js/robot/get_Img_robot",
+			data: {
+				data: content
+			},
+			dataType: "json", //xml、html、script、jsonp、text
+			beforeSend:function(){},
+			complete:function(){},
+			success: function(data) {
+				console.log(data)
+				for(var	i=0;i<data.length;i++){
+					printRobotMessage(data[i].values.text);
+				}
+			},
+			error:function(){},
+		});
+	}
+	function	sendImg(images){
+		
+	}
 
 </script>
 

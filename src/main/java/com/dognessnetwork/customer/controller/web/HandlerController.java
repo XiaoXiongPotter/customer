@@ -68,13 +68,13 @@ public class HandlerController {
     }
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String login(HttpServletRequest  request) {
-        return "redirect:http://192.168.0.197:8088/users/index"/*"index"*/;
+        return /*"redirect:http://192.168.0.197:8088/users/index"*/"index";
     }
     
     @RequestMapping("/index")
     public String index1(String	username,HttpServletRequest	request,HttpServletResponse	response) {
     	Console.log(username);
-    	String	res	=	HttpUtil.post("http://192.168.0.197:8088/users/test","");
+    	//String	res	=	HttpUtil.post("http://192.168.0.197:8088/users/test","");
     	/*CloseableHttpClient httpClient = HttpClientBuilder.create().build();
         // 2. 创建HttpPost对象
         HttpPost post = new HttpPost(
@@ -112,7 +112,7 @@ public class HandlerController {
             }
         }*/
     	Console.log("getId");
-    	Console.log(res);
+    	//Console.log(res);
     	
     	// String sessionId = request.getSession().getId();
     	 
