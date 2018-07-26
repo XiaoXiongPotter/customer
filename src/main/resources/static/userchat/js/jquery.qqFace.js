@@ -21,7 +21,7 @@
 		$(this).click(function(e){
 			var strFace, labFace;
 			if($('#'+id).length<=0){
-				strFace = '<div id="'+id+'" style="position:absolute;display:none;z-index:1000;" class="qqFace">' +
+				strFace = '<div id="'+id+'">' +
 							  '<table border="0" cellspacing="0" cellpadding="0"><tr>';
 				for(var i=1; i<=75; i++){
 					labFace = '['+tip+i+']';
@@ -30,7 +30,7 @@
 				}
 				strFace += '</tr></table></div>';
 			}
-			$(this).parent().append(strFace);
+			$(".qqFace").append(strFace);
 			
 			var offset = $(this).position();
 			var top = offset.top + $(this).outerHeight();

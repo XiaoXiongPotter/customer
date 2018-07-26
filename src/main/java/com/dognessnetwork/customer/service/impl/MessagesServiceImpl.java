@@ -5,6 +5,9 @@ import com.dognessnetwork.customer.dto.Msg;
 import com.dognessnetwork.customer.service.api.MessagesService;
 import com.dognessnetwork.customer.util.WebSocketClient;
 
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,9 +79,13 @@ public class MessagesServiceImpl implements MessagesService {
 		msg.setFromUser(newMessages.getFormUser());
 		msg.setToUser(newMessages.getToUser());
 		msg.setUserName(newMessages.getFormUser().substring(3));
-		msg.setMsgType("text");
+		if(newMessages!=null){
+		    msg.setMsgType(newMessages.getMessageType().toString());
+		}
+		
 		msg.setMsgId(newMessages.getId());
 		msg.setSendTime(newMessages.getSendTime());
+		
 		webSocketClient.customerSend("/"+msg.getToUser(), msg);
         return newMessages;
     }

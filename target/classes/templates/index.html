@@ -13,7 +13,8 @@
 <meta name="keywords" content="">
 <title>宠联网客服</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<link rel="stylesheet" href="/layui/css/layui.css">
+<link rel="stylesheet" href="./layui/css/layui.css">
+<link rel="stylesheet" type="text/css" href="./userchat/font_Icon/iconfont.css">
 <style type="text/css">
 	.chat-body{
 		position: absolute;
@@ -297,6 +298,24 @@
     border-image-outset: initial;
     border-image-repeat: initial;
 	}
+	.layim-chat-tool span{
+		position: relative;
+	    margin: 0 10px;
+	    margin-top: 0px;
+	    margin-right: 10px;
+	    margin-bottom: 0px;
+	    margin-left: 10px;
+	    display: inline-block;
+	    vertical-align: top;
+	    font-size: 24px;
+	    cursor: pointer;
+	}
+	.layui-icon{
+		font-family: layui-icon!important;
+	    font-size: 16px;
+	    font-style: normal;
+	    -webkit-font-smoothing: antialiased;
+	}
 </style>
 </head>
 <body class="layui-layout-body">
@@ -370,7 +389,15 @@
     </div>
     <!-- 右侧显示聊天框 -->
     <div	class="chat-box">
-    	<div	class="title"></div>
+    	<div	class="title">
+    	<ul class="layui-nav layui-layout-right">
+	      <li class="layui-nav-item">
+	        <a href="javascript:;">转接客服</a>
+	        <dl class="layui-nav-child"	id="zhuanjie">
+	        </dl>
+	      </li>
+	    </ul>
+    	</div>
     	<div	class="content"></div>
     	<div	class="im-chat-box">
     		<div	class="chat-show">
@@ -387,14 +414,28 @@
 							<div class="layim-chat-user"> <img src="/layui/images/img/tu2.png"> <cite><i>2018-07-12 21:45:11</i>707</cite> </div>
 							<div class="layim-chat-text">ssss</div>
 						</li>
+						
 					</ul>
     			</div>
     			</div>
+    			
     			<div	class="chat-footer">
-    				<div class="layui-unselect layim-chat-tool chat-tool"	 data-json="%7B%22name%22%3A%22tml%22%2C%22type%22%3A%22friend%22%2C%22avatar%22%3A%22%2Flayui%2Fimages%2Fimg%2Ftu2.png%22%2C%22id%22%3A1%7D"><span class="layui-icon layim-tool-face" title="选择表情" layim-event="face"></span></div>
+    				<div	class="qqFace">	</div>
+    				<div class="layui-unselect layim-chat-tool chat-tool"	 data-json="%7B%22name%22%3A%22tml%22%2C%22type%22%3A%22friend%22%2C%22avatar%22%3A%22%2Flayui%2Fimages%2Fimg%2Ftu2.png%22%2C%22id%22%3A1%7D">
+    				
+                            <span  id="chat-biaoqing" class="layui-icon layim-tool-face" title="选择表情" ></span>
+                        
+    				<label id="chat-tuxiang" title="发送图片" for="inputImage" class="btn-default-styles">
+                            <input type="file" onchange="selectImg(this)" accept="image/jpg,image/jpeg,image/png"
+                                   name="file" id="inputImage" class="hidden"	hidden="true"	width="24px" height="38px">
+                            <span class="layui-icon layim-tool-image" title="上传图片" >
+    				</span>
+                        </label>
+    				
+    				</div>
     				<div	class="sub">
     					<div	class="chat-textarea">
-	    					<textarea	id="messages"></textarea>
+	    					<textarea	id="messages" name="saytext"></textarea>
 	    				</div>
 	    				<div	class="chat-bottom">
 	    					<div	class="chat-send">
@@ -417,9 +458,11 @@
 <script src="./layui/jquery-2.1.4.js"></script>
 <script src="./layui/layui.js"></script>
 <script src="./js/message.js"></script>
+<script src="./userchat/js/jquery.qqFace.js"></script>
 <script src="./webjars/sockjs-client/1.1.2/sockjs.min.js"></script>
 <script src="./webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
 <script>
+
 	//JavaScript代码区域
 	layui.use('element', function(){
 	  var element = layui.element;
@@ -499,6 +542,17 @@
 		if(data.header.code==6000){
 			console.log("获取到的在线客服列表");
 			console.log(data.data.CSD)
+			var	CSD		=	data.data.CSD;
+			var	CSDlen	=	data.data.CSD.length;
+			if(CSDlen>0){
+				for(var	i=0;i<CSDlen;i++){
+					var	result	=	'<dd><a href="">'
+								+	CSD[i]
+								+	'</a></dd>'
+					$("#zhuanjie").append(result);
+				}
+				
+			}
 			console.log("获取到的在线用户列表");
 			console.log(data.data.PFU)
 			if(data.data.PFU.length>0){
@@ -520,15 +574,14 @@
 			console.log("下线");
 			console.log(data.data);
 		}
-		/* var	len	=	json.length;
-    	//获取到的在线用户列表
-    	if(len>0){
-        	//调用后台查询那些是没有接入的
-        	get_petUser_is_accessing(json)
-        } else {
-            //没有请求用户的情况
-            console.log("无用户")
-        } */
+		if(data.header.code==6666){
+			if(data.data.msgType=='Picture'){
+				getImage(data.data)
+			}
+			if(data.data.msgType=='Text'){
+				getMessage(data.data)
+			}
+		}
 	}
 	/* //接收消息
 	console.log("接收坐席号："+seat);
@@ -574,51 +627,7 @@
 			}
 		});
 	}); */
-		// 向服务器发起websocket连接并发送CONNECT帧
-		/* stompClient.connect(
-		    {},
-		function connectCallback (frame) {
-		    // 连接成功时（服务器响应 CONNECTED 帧）的回调方法
-		    var result ='<button class="layui-btn">在线<span class="layui-badge-dot layui-bg-orange"></span></button>'
-		    	$("#state-info").append(result)
-		        console.log('已连接【' + frame + '】');
-		        stompClient.subscribe('/topic/customer/' + seat, function (data) {
-		        	var json = JSON.parse(data.body);
-					console.log("接收到的数据")
-					console.log(json)
-					petUser=json;
-					if(json.msgId==null){
-						var result = '<dd><a href="#"	onclick="jr(this.id)"	id="'+json.fromUser+'">'+json.userName+'</a></dd>'
-						$("#djr").append(result)
-						//让用户在当前客服下排队
-						queue(json.fromUser)
-					}else{
-						getMessage(json)
-					}
-		        });
-		    },
-		function errorCallBack (error) {
-		    // 连接失败时（服务器响应 ERROR 帧）的回调方法
-		        document.getElementById("state-info").innerHTML = "连接失败";
-		        console.log('连接失败【' + error + '】');
-		    }
-		);  */
 	})
-	
-
-	  
-	/* //聊天消息通道
-	stompClient.connect({},function(frame) {
-			stompClient.subscribe('/topic/chat/'+room,
-							function(data) {
-							var json = JSON.parse(data.body);
-							console.log("聊天消息通道")
-							console.log(json)
-							//petUser=json;
-							
-								
-			});
-	}); */
 	//判断是否接入
 	function	get_petUser_is_accessing(e){
 		console.log("是否接入");
@@ -690,61 +699,30 @@
 				error:function(){alert('eoo')},
 			});
 		$(".chat-body").fadeToggle(1);
-		/* layui.use('layim', function(layim){
-					layim.config({
-						  brief:true,//开启简约型式
-						  	init: { mine:myInfo}
-					});
-					
-					layim.chat({
-						  name: PETUSER.username//名称
-						  ,type: 'friend' //聊天类型
-						  ,avatar: PETUSER.avatar //头像
-						  ,id: PETUSER.id //好友id
-						});
-					
-						layim.on('sendMessage', function(res){
-							  var mine = res.mine; //包含我发送的消息及我的信息
-							  var to = res.to; //对方的信息
-							  console.log("发送");
-							  console.log(res.mine);
-							  console.log(petUser.id);
-							  sendData=res.mine
-							  //调用消息发送
-							  send()
-						  });
-				}); */
-		/* //接入的同时发送一个我当前所在的房间号
-		response() */
 		
 	}
-	/* 
-	获取带接入用户列表的信息 'A'.charCodeAt()-64
-	/js/petusers/getPetUserList
-	*/
-	/* function	getPetUserList(ids){
-		console.log(ids)
-		$.ajax({
-			type: "GET", //GET或POST,
-			async:true, //默认设置为true，所有请求均为异步请求。
-			url: "/js/petusers/getPetUserList?ids="+ids,
-			dataType: "json", //xml、html、script、jsonp、text
-			success: function(data) {
-				console.log(data)
-				for(var	i=0;i<data.length;i++){
-					var result = '<dd><a href="#"	onclick="jr(this.id)"	id="'+data[i].fromUser+'">'+data[i].userName+'</a></dd>'
-					$("#djr").append(result)
-				}
-				
-			},
-			error:function(){alert('eoo')},
+	$(function(){
+		$('#chat-biaoqing').qqFace({
+			id : 'facebox', 
+			assign:'messages', 
+			path:'./userchat/img/arclist/'	//表情存放的路径"src/main/resources/static"
 		});
-	} */
+	});
+	function	showQQFace(){}//删除会报错
+	//查看结果
+	function replace_em(str){
+		str = str.replace(/\</g,'&lt;');
+		str = str.replace(/\>/g,'&gt;');
+		str = str.replace(/\n/g,'<br/>');
+		str = str.replace(/\[em_([0-9]*)\]/g,'<img	style="width: 24px;height: 24px;" src="./userchat/img/arclist/$1.gif" border="0" />');
+		return str;
+	}
 	function	send() {
 		console.log("发送数据：")
 		/* console.log(message) */
 		message	=	$("#messages").val();
-		console.log(message)
+		var	messages	=	replace_em(message)
+		console.log(messages)
 		if(message.length==0){
 			var	content	=	"消息内容不能为空！";
 			alertInfo(content);
@@ -756,7 +734,7 @@
 				data: {
 					formUser: seat, 
 					toUser : /* petUser.fromUser */tousername,
-					postMessages : /* sendData.content */message
+					postMessages : /* sendData.content */messages
 				},
 				dataType: "json", //xml、html、script、jsonp、text
 				success: function(data) {
@@ -768,7 +746,7 @@
 					}else{
 						//清空输入框拼接
 						$("#messages").val("");
-						printMessage(message)
+						printMessage(messages)
 					}
 				},
 				error:function(){alert('eoo')},
@@ -777,24 +755,20 @@
 		 
 	}
 	function	getMessage(json){
-		//seat	=	json.fromUser;
 		printUserMessage(json)
-		/* layui.use('layim', function(layim){
-			
-			layim.getMessage({
-				username: json.userName//消息来源用户名
-			  	,avatar: "/layui/images/img/tu2.png"//消息来源用户头像
-			  	,id: json.msgId  //消息的来源ID（如果是私聊，则是用户id，如果是群聊，则是群组id）
-			  	,type: "friend" //聊天窗口来源类型，从发送消息传递的to里面获取
-			  	,content: json.content //消息内容
-			  	,cid: 0 //消息id，可不传。除非你要对消息进行一些操作（如撤回）
-			  	,mine: false //是否我发送的消息，如果为true，则会显示在右方
-			  	,fromid: json.fromUser//消息的发送者id（比如群组中的某个消息发送者），可用于自动解决浏览器多窗口时的一些问题
-			  	,timestamp: json.sendTime //服务端时间戳毫秒数。注意：如果你返回的是标准的 unix 时间戳，记得要 *1000
-		});
-			}); */
 	}
-	
+	function	getImage(data){
+		var	path	=	data.content;
+		
+		var	image	=	'<li>'
+					+	'<div class="layim-chat-user"> <img src="/layui/images/img/tu2.png"> <cite class="layim-chat-user-cite">tml <i>'
+					+	format(data.sendTime)
+					+	'</i> </cite> </div>'
+					+	'<div class="layim-chat-user-text"><img src="'
+					+	path
+					+	'"></div></li>'
+		$("#printMsg ul").append(image);
+	}
 	$("#send").click(function(){
 		send();
 	})
@@ -834,6 +808,37 @@
 		tousername	=	'PFU'+id;
 		$(".chat-body").fadeToggle(1);
 	}
+    //发送图片
+    function selectImg(pic) {
+        if (!pic.files || !pic.files[0]) {
+            return;
+        }
+        var reader = new FileReader();
+        reader.onload = function (evt) {
+            var images = evt.target.result;
+            console.log(room)
+            console.log(seat)
+    		var	res	=	customerSendImg(images.substr(images.indexOf(',') + 1));
+    		if(res.res==0){
+    			printUserImage(images);
+    		}
+        };
+        reader.readAsDataURL(pic.files[0]);
+
+    }
+    function	printUserImage(images){
+    	var	mineMsg	=	'<li class="layim-chat-mine">'
+					+	'<div class="layim-chat-user"> <img src="/layui/images/img/tu2.png">'
+					+	'<cite><i>'
+					+	getNowFormatDate()
+					+	'</i>707</cite> </div>'
+					+	'<div class="layim-chat-text">'
+					+	'<img src="'
+					+	images  
+					+	'"></div>'
+					+	'</li>';
+		$("#printMsg ul").append(mineMsg);
+    }
 </script>
 </body>
 </html>

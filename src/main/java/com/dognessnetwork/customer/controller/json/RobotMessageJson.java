@@ -69,7 +69,7 @@ public class RobotMessageJson {
                 Console.log(result);
                 JSONObject  js  =   JSONUtil.parseObj(result);
                 JSONObject  header  =   JSONUtil.parseObj(js.get("header"));
-                if(header.get("code").equals(10000)){
+                if(header.get("code").equals(1000)){
                     Robot   robot   =   new Robot();
                     value   =   robot.getImage(js.get("data")+"");
                     Console.log(value);

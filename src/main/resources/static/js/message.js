@@ -48,6 +48,48 @@
 		});
     	return	res;
     }
+    function	sendImg(images){
+    	var	res;
+    	$.ajax({
+			type: "POST", //GET或POST,
+			async:false, //默认设置为true，所有请求均为异步请求。
+			url: "/js/messageses/sendImg",
+			data: {
+				formUser: room, 
+				toUser : seat,
+				postMessages : images
+			},
+			dataType: "json", //xml、html、script、jsonp、text
+			success: function(data) {
+				console.log("消息发送")
+				console.log(data)
+				res	=	data;
+			},
+			error:function(){alert('eoo')},
+		});
+    	return	res;
+    }
+    function	customerSendImg(images){
+    	var	res;
+    	$.ajax({
+			type: "POST", //GET或POST,
+			async:false, //默认设置为true，所有请求均为异步请求。
+			url: "/js/messageses/sendImg",
+			data: {
+				formUser: seat, 
+				toUser : tousername,
+				postMessages : images
+			},
+			dataType: "json", //xml、html、script、jsonp、text
+			success: function(data) {
+				console.log("消息发送")
+				console.log(data)
+				res	=	data;
+			},
+			error:function(){alert('eoo')},
+		});
+    	return	res;
+    }
     /* 生成当前时间 */
     function getNowFormatDate() {
         var date = new Date();
