@@ -4,6 +4,7 @@
 package com.dognessnetwork.customer.service.api;
 
 import com.dognessnetwork.customer.domain.ChatRoom;
+import com.dognessnetwork.customer.domain.RoomStatus;
 import com.dognessnetwork.customer.service.api.ChatRoomService;
 import io.springlets.data.domain.GlobalSearch;
 import io.springlets.format.EntityResolver;
@@ -128,5 +129,43 @@ privileged aspect ChatRoomService_Roo_Service {
      * @return ChatRoom
      */
     public abstract ChatRoom ChatRoomService.setComment(ChatRoom chatRoom, Iterable<Long> comment);
+    
+    /**
+     * TODO Auto-generated method documentation
+     * 
+     * @param seat
+     * @param pageable
+     * @return Page
+     */
+    public abstract Page<ChatRoom> ChatRoomService.findBySeat(String seat, Pageable pageable);
+    
+    /**
+     * TODO Auto-generated method documentation
+     * 
+     * @param seat
+     * @param petUser
+     * @param status
+     * @param pageable
+     * @return Page
+     */
+    public abstract Page<ChatRoom> ChatRoomService.findBySeatAndPetUserAndStatus(String seat, String petUser, RoomStatus status, Pageable pageable);
+    
+    /**
+     * TODO Auto-generated method documentation
+     * 
+     * @param seat
+     * @return Long
+     */
+    public abstract long ChatRoomService.countBySeat(String seat);
+    
+    /**
+     * TODO Auto-generated method documentation
+     * 
+     * @param seat
+     * @param petUser
+     * @param status
+     * @return Long
+     */
+    public abstract long ChatRoomService.countBySeatAndPetUserAndStatus(String seat, String petUser, RoomStatus status);
     
 }

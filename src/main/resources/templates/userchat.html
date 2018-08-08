@@ -6,6 +6,9 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="weburl" content="http://www.jq22.com/">
 <title>宠联网人工客服</title>
+  <style type="text/css">
+
+  </style>
 <link rel="stylesheet" type="text/css" href="./layui/css/layui.css">
 <link rel="stylesheet" type="text/css" href="./userchat/font_Icon/iconfont.css">
 <link rel="stylesheet" type="text/css" href="./userchat/css/chat.css">
@@ -37,6 +40,12 @@
         </div>
             <div class="chatBox-kuang" ref="chatBoxkuang">
                 <div class="chatBox-content">
+                <div	class="show-sk">
+                	<div class="sk-three-bounce">
+			        	
+			      	</div>
+                </div>
+                	
                     <div class="chatBox-content-demo" id="chatBox-content-demo">
 
                     </div>
@@ -79,6 +88,7 @@
     var	seat;
     var	kefuList	=	[];
     var face;
+    
 	$(function(){
 		$('#chat-biaoqing').qqFace({
 			id : 'facebox', 
@@ -111,6 +121,9 @@
 		      console.log(data);
 		      console.log("<<<<<<room赋值");
 		      console.log(room);
+		    	//查询今天的消息
+			    refresh();
+			    console.log("查询今天的消息");
 		   }
     })
     var websocket;
@@ -209,6 +222,14 @@
 			var	res	=	sendMsg(content);
 			if(res.res==0){
 				printUserMessage(content);
+			}
+			//客服掉线了所以向机器人发送了一条消息
+			if(res.res==2){
+				seat=null;
+				printUserMessage(content);
+				console.log("<<<<<<<<")
+				var	array	=	JSON.parse(res.data)
+				printRobotMessage(array[0].values.text);
 			}
 		}
 
@@ -356,12 +377,19 @@
         			success: function(data) {
         				console.log("人工请求")
         				console.log(data)
-        				alertPrompt("已为您转接人工客服")
+        				if(data.res==0){
+        					alertPrompt("已为您转接人工客服")
+        				}
+        				if(data.res==1){
+        					alertPrompt("进入待接入区请稍后")
+        				}
         				res	=	data;
         			},
         			error:function(){alert('eoo')},
         		});
         	}
+        }else{
+        	alertPrompt("人工客服未上线请稍后再试！")
         }
     	
     })
@@ -404,9 +432,11 @@
         var reader = new FileReader();
         reader.onload = function (evt) {
             var images = evt.target.result;
+            console.log(images);
           	//接入机器人
     		if(seat==null){
     			printUserImgToRobot(images.substr(images.indexOf(',') + 1));
+    			printUserImage(images);
     		}else{
     			var	res	=	sendImg(images.substr(images.indexOf(',') + 1));
     			if(res.res==0){

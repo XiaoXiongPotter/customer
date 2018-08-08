@@ -9,6 +9,7 @@ import org.springframework.roo.addon.layers.service.annotations.RooService;
  */
 @RooService(entity = ChatRoom.class)
 public interface ChatRoomService {
-	ChatRoom	findBySeat(String	seat);
-	ChatRoom	findByPetUser(String	petUserName);
+    ChatRoom    findBySeat(String   seat);
+    ChatRoom    findByPetUser(String    petUserName);
+    ChatRoom    findBySeatAndPetUser(String    seat,String petUserName);
 }

@@ -133,24 +133,73 @@
 	function	alertPrompt(content){
 		layui.use('layer', function(){
 			  var layer = layui.layer;
-			  /*layer.open({
-				  type: 3
-				  ,title: '<i class="layui-icon layui-icon-speaker"></i>'
-				  ,content: content
-				  ,time:  3000
-				  ,anim: 1
-				  ,closeBtn: 0
-				  ,offset: ['100px', '190px']
-				});*/  
 			  layer.msg('<p style="color: #FFB800;">'+content+'</p>', {icon: 6}); 
 			});
 	}
-	
+	//提示有转接任务
+	function	alertTransfer(content){
+		layui.use('layer', function(){
+			  var layer = layui.layer;
+			  layer.confirm('您有一个转接请求，是否接入？', {
+				  btn: ['接入','无视'] //按钮
+				}, function(){
+					$.ajax({
+						type: "POST",
+						async:false,
+						url: "js/chatrooms/trans_ferAccess",
+						data: {
+							json:content
+						},
+						dataType: "json",
+						success: function(data) {
+							layer.msg('接入成功', {icon: 1});
+							var	array	=	data.data;
+							
+							if(array.length>0){
+								$(".chat-body").fadeToggle(1);
+								PRINT(array);
+								
+							}
+						},
+						error:function(){layer.msg('接入失败', {icon: 1});},
+					});
+				  
+				}, function(){
+					$.ajax({
+						type: "POST",
+						async:false,
+						url: "js/chatrooms/deny_Access",
+						data: {
+							json:content
+						},
+						dataType: "json",
+						success: function(data) {
+							if(data.header.status==1000){
+								layer.msg('成功拒绝', {icon: 1});
+							}
+						},
+						error:function(){layer.msg('拒绝失败', {icon: 1});},
+					});
+				  
+				}); 
+			});
+	}
+	//客服拒绝转接后的消息提醒
+	function	alertDenyAccess(content){
+		var data=JSON.parse(content);
+		layui.use('layer', function(){
+			  var layer = layui.layer;
+			  layer.msg('您的转接被'+data.customer+'拒绝了,请选择其他在线客服进行转接！', function(){
+				//关闭后的操作
+				  $(".chat-body").fadeToggle(1);
+				});
+			});
+	}
 	//下拉刷新
 	const start = new Date(new Date(new Date().toLocaleDateString()).getTime());
 	var	thatday	=	start.getTime();
 	var day =  new Date().getDate();
-	var _element = document.getElementById('chatBox-content-demo'),
+	var _element = document.getElementById('printMsg'),
     _refreshText = document.querySelector('.show-sk'),
     _startPos = 0,
     _transitionHeight = 0;
@@ -189,7 +238,7 @@
 			async:false,
 			url: "js/messageses/messageHistory",
 			data: {
-				userName: room, 
+				userName: seat, 
 				thatDay : thatday,
 			},
 			dataType: "json",
@@ -199,40 +248,7 @@
 				var	array	=	data.data;
 				console.log(array)
 				if(array.length>0){
-					for(var	i=0;i<array.length;i++){
-						if(array[i].formUser==room){
-							if(array[i].messageType=='Text'){
-								printFormUserMessage(array[i].postMessages,format(array[i].sendTime))
-								if(i==array.length-1){_refreshText.innerHTML ='';}
-								else{
-						            _refreshText.innerHTML = '<div class="sk-three-bounce"><div class="sk-child sk-bounce1"></div><div class="sk-child sk-bounce2"></div><div class="sk-child sk-bounce3"></div></div>';
-								}
-							}else
-							if(array[i].messageType=="Picture"){
-								printFormUserImage(array[i].postMessages,format(array[i].sendTime))
-								if(i==array.length-1){_refreshText.innerHTML ='';}
-								else{
-						            _refreshText.innerHTML = '<div class="sk-three-bounce"><div class="sk-child sk-bounce1"></div><div class="sk-child sk-bounce2"></div><div class="sk-child sk-bounce3"></div></div>';
-								}
-							}
-							
-						}else{
-							if(array[i].messageType=='Text'){
-								printToUserMessage(array[i].postMessages,format(array[i].sendTime))
-								if(i==array.length-1){_refreshText.innerHTML ='';}
-								else{
-						            _refreshText.innerHTML = '<div class="sk-three-bounce"><div class="sk-child sk-bounce1"></div><div class="sk-child sk-bounce2"></div><div class="sk-child sk-bounce3"></div></div>';
-								}
-							}else
-							if(array[i].messageType=="Picture"){
-								printToUserImage(array[i].postMessages,format(array[i].sendTime))
-								if(i==array.length-1){_refreshText.innerHTML ='';}
-								else{
-						            _refreshText.innerHTML = '<div class="sk-three-bounce"><div class="sk-child sk-bounce1"></div><div class="sk-child sk-bounce2"></div><div class="sk-child sk-bounce3"></div></div>';
-								}
-							}
-						}
-					}
+					PRINT(array)
 				}
 				else{ 
 					_refreshText.innerHTML ='';
@@ -242,75 +258,117 @@
 		});
         
     }
-	function	printFormUserMessage(str,date) {
-		var	textContent	=	'<div class="clearfloat">'
-						+	'<div class="author-name">'
-						+	'<small class="chat-date">'
-						+	date
-						+	'</small>'
-						+	'</div>'
-						+	'<div class="right">'
-		            	+	'<div class="chat-message">'
-		            	+	str
-		            	+	'</div>'
-		            	+	'<div class="chat-avatars"><img src="./userchat/img/icon02.png" alt="头像"></div>'
-		            	+	'</div>'
-		            	+	'</div>'
-        $(".chatBox-content-demo").append(textContent);
-        //发送后清空输入框
-        $(".div-textarea").html("");
-        //聊天框默认最底部
-        $(document).ready(function () {
-        	$("#chatBox-content-demo").scrollTop($("#chatBox-content-demo")[0].scrollHeight);
-        });
-	}
-	function	printFormUserImage(images,date){
-		var	result	=	'<div class="clearfloat"><div class="author-name"><small class="chat-date">'
+    function	PRINT(array){
+    	console.log(array)
+			for(var	i=0;i<array.length;i++){
+				if(array[i].toUser.substring(0,3)=='PFU'){
+					tousername=array[i].toUser;
+					console.log(tousername)
+				}
+				if(array[i].formUser.substring(0,3)==seat.substring(0,3)){
+					if(array[i].messageType=='Text'){
+						printFormUserMessage(array[i].postMessages,format(array[i].sendTime),array[i].formUser.substring(3))
+						if(i==array.length-1){_refreshText.innerHTML ='';}
+						else{
+				            _refreshText.innerHTML = '<div class="sk-three-bounce"><div class="sk-child sk-bounce1"></div><div class="sk-child sk-bounce2"></div><div class="sk-child sk-bounce3"></div></div>';
+						}
+					}else
+					if(array[i].messageType=="Picture"){
+						printFormUserImage(array[i].postMessages,format(array[i].sendTime),array[i].formUser.substring(3))
+						if(i==array.length-1){_refreshText.innerHTML ='';}
+						else{
+				            _refreshText.innerHTML = '<div class="sk-three-bounce"><div class="sk-child sk-bounce1"></div><div class="sk-child sk-bounce2"></div><div class="sk-child sk-bounce3"></div></div>';
+						}
+					}
+					
+				}else{
+					if(array[i].messageType=='Text'){
+						printToUserMessage(array[i].postMessages,format(array[i].sendTime),array[i].formUser.substring(3))
+						if(i==array.length-1){_refreshText.innerHTML ='';}
+						else{
+				            _refreshText.innerHTML = '<div class="sk-three-bounce"><div class="sk-child sk-bounce1"></div><div class="sk-child sk-bounce2"></div><div class="sk-child sk-bounce3"></div></div>';
+						}
+					}else
+					if(array[i].messageType=="Picture"){
+						printToUserImage(array[i].postMessages,format(array[i].sendTime),array[i].formUser.substring(3))
+						if(i==array.length-1){_refreshText.innerHTML ='';}
+						else{
+				            _refreshText.innerHTML = '<div class="sk-three-bounce"><div class="sk-child sk-bounce1"></div><div class="sk-child sk-bounce2"></div><div class="sk-child sk-bounce3"></div></div>';
+						}
+					}
+				}
+			}
+		
+    }
+	function	printFormUserMessage(str,date,formUserName) {
+		var	mineMsg	=	'<li class="layim-chat-mine">'
+					+	'<div class="layim-chat-user"> <img src="/layui/images/img/tu2.png">'
+					+	'<cite><i>'
 					+	date
-					+	'</small> </div> <div class="right"> <div class="chat-message"><img src="'
-					+	images
-					+	'"></div> <div class="chat-avatars"><img src="./userchat/img/icon01.png" alt="头像"></div> </div> </div>'
-		$(".chatBox-content-demo").append(result)
-        //聊天框默认最底部
-        $(document).ready(function () {
-            $("#chatBox-content-demo").scrollTop($("#chatBox-content-demo")[0].scrollHeight);
-        });
-	};
-
-	function	printToUserMessage(str,date) {
-		var	kefumessage	=	'<div class="clearfloat">'
-						+	'<div class="author-name">'
-						+	'<small class="chat-date">'
-						+	date
-						+	'</small>'
-						+	'</div>'
-			            +	'<div class="left">'
-			            +	'<div class="chat-avatars"><img src="./layui/images/img/tu2.png" alt="头像"></div>'
-			            +	'<div class="chat-message">'
-			            +	str
-			            +	'</div>'
-			            +	'</div>'
-			            +	'</div>'
-		$(".chatBox-content-demo").append(kefumessage)
-		//发送后清空输入框
-		$(".div-textarea").html("");
-		//聊天框默认最底部
-		$(document).ready(function () {
-		$("#chatBox-content-demo").scrollTop($("#chatBox-content-demo")[0].scrollHeight);
+					+	'</i>'
+					+	formUserName
+					+	'</cite> </div><div class="layim-chat-text">'
+					+	str
+					+	'</div>'
+					+	'</li>';
+		$("#printMsg ul").append(mineMsg);
+	}
+	function	printFormUserImage(str,date,formUserName){
+		var	mineMsg	=	'<li class="layim-chat-mine">'
+					+	'<div class="layim-chat-user"> <img src="/layui/images/img/tu2.png">'
+					+	'<cite><i>'
+					+	date
+					+	'</i>'
+					+	formUserName
+					+	'</cite> </div><div class="layim-chat-text">'
+					+	'<img src="'
+					+	str  
+					+	'"></div>'
+					+	'</li>';
+		$("#printMsg ul").append(mineMsg);
+	}
+	function	printToUserMessage(str,date,formUserName){
+		var	userMsg	=	'<li>'
+					+	'<div class="layim-chat-user"> <img src="/layui/images/img/tu2.png"> <cite class="layim-chat-user-cite">'
+					+	formUserName
+					+	'<i>'
+					+	date
+					+	'</i> </cite> </div>'
+					+	'<div class="layim-chat-user-text">'
+					+	str
+					+	'</div></li>'
+		$("#printMsg ul").append(userMsg);
+	}
+	function	printToUserImage(str,date,formUserName){
+		var	image	=	'<li>'
+					+	'<div class="layim-chat-user"> <img src="/layui/images/img/tu2.png"> <cite class="layim-chat-user-cite">'
+					+	formUserName
+					+	'<i>'
+					+	date
+					+	'</i> </cite> </div>'
+					+	'<div class="layim-chat-user-text"><img src="'
+					+	str
+					+	'"></div></li>'
+		$("#printMsg ul").append(image);
+	}
+	function	zhuanjie(customer){
+		var	res;
+    	$.ajax({
+			type: "POST",
+			async:false,
+			url: "/js/chatrooms/can_transfer",
+			data: {
+				seat: seat, 
+				customer : customer,
+				petUser : petUser
+			},
+			dataType: "json",
+			success: function(data) {
+				console.log("消息发送")
+				console.log(data)
+				res	=	data;
+			},
+			error:function(){alert('eoo')},
 		});
+    	return	res;
 	}
-	function	printToUserImage(images,date){
-		var	result	=	'<div class="clearfloat"><div class="author-name"><small class="chat-date">'
-					+	date
-					+	'</small></div><div class="left"><div class="chat-avatars"><img src="'
-					+	'./userchat/img/icon01.png'
-					+	'" alt="头像"></div><div class="chat-message"><img src="'
-					+	images
-					+	'" alt=""></div></div></div>'
-		$(".chatBox-content-demo").append(result);
-		//聊天框默认最底部
-        $(document).ready(function () {
-            $("#chatBox-content-demo").scrollTop($("#chatBox-content-demo")[0].scrollHeight);
-        });
-	}
-	

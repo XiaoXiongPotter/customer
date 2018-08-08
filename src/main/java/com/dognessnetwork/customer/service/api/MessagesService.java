@@ -23,4 +23,22 @@ public interface MessagesService {
 	 * @return
 	 */
 	public	abstract	Messages	updateStatus(Long	sendTime);
+
+	/**
+     * TODO Auto-generated method documentation
+     * 
+     * @param entity
+     * @return Messages
+     */
+    public abstract Messages save(String    seat,String petUserName);
+    /**
+     * 请求人工客服
+     * @param formUser
+     * @param toUser
+     * @param postMessages
+     * @return
+     */
+    public  abstract    String  requestCustomerService(String   formUser,String    toUser,String    postMessages);
+    
+    public abstract String sendMsg(Messages messages);
 }

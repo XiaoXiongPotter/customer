@@ -212,4 +212,48 @@ public class WebSocketClient {
 			e.printStackTrace();
 		}
 	}
+	
+	public String sendMsg(Msg    msg) {
+	    Object Msg =   (Object)msg;
+	    String room    =   "/"+msg.getToUser();
+	    String empty = "";
+	    JSONObject  js  =   new JSONObject();
+        
+        List<Transport> transports = Arrays.asList(new WebSocketTransport(new StandardWebSocketClient()),
+                new RestTemplateXhrTransport(new RestTemplate()));
+        SockJsClient sockJsClient = new SockJsClient(transports);
+        WebSocketStompClient stompClient = new WebSocketStompClient(sockJsClient);
+        StompSessionHandler handler = new StompSessionHandlerAdapter() {
+            @Override
+            public void afterConnected(StompSession session, StompHeaders connectedHeaders) {
+                System.out.println("#### >>> ");
+            }
+        };
+        stompClient.setMessageConverter(new MappingJackson2MessageConverter());
+        ListenableFuture<StompSession> future = stompClient.connect(wesocket, handler, empty);
+        try {
+            future.get().send(getDestination() + getCustomerMapping()+room, Msg);
+
+            future.addCallback(new SuccessCallback<StompSession>() {
+                public void onSuccess(StompSession stompSession) {
+                    System.out.println(">>> on Success!");
+                    js.put("res", "0");
+                }
+            }, new FailureCallback() {
+                public void onFailure(Throwable throwable) {
+                    System.out.println(">>> on Failure!");
+                    js.put("res", "1");
+                    throwable.printStackTrace();
+                }
+            });
+
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+	    return js+"";
+	}
 }

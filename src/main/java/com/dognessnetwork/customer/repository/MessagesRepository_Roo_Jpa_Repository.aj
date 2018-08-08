@@ -7,6 +7,8 @@ import com.dognessnetwork.customer.domain.Messages;
 import com.dognessnetwork.customer.repository.MessagesRepository;
 import com.dognessnetwork.customer.repository.MessagesRepositoryCustom;
 import io.springlets.data.jpa.repository.DetachableJpaRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 privileged aspect MessagesRepository_Roo_Jpa_Repository {
@@ -16,5 +18,206 @@ privileged aspect MessagesRepository_Roo_Jpa_Repository {
     declare parents: MessagesRepository extends MessagesRepositoryCustom;
     
     declare @type: MessagesRepository: @Transactional(readOnly = true);
+    
+    /**
+     * TODO Auto-generated method documentation
+     * 
+     * @param formUser
+     * @param toUser
+     * @param sendTime
+     * @param pageable
+     * @return Page
+     */
+    public abstract Page<Messages> MessagesRepository.findByFormUserOrToUserAndSendTimeGreaterThanEqual(String formUser, String toUser, Long sendTime, Pageable pageable);
+    
+    /**
+     * TODO Auto-generated method documentation
+     * 
+     * @param formUser
+     * @param toUser
+     * @param sendTime
+     * @return Long
+     */
+    public abstract long MessagesRepository.countByFormUserOrToUserAndSendTimeGreaterThanEqual(String formUser, String toUser, Long sendTime);
+    
+    /**
+     * TODO Auto-generated method documentation
+     * 
+     * @param formUser
+     * @param toUser
+     * @param sendTime
+     * @param sendTime2
+     * @param pageable
+     * @return Page
+     */
+    public abstract Page<Messages> MessagesRepository.findByFormUserOrToUserAndSendTimeGreaterThanEqualAndSendTimeLessThanEqual(String formUser, String toUser, Long sendTime, Long sendTime2, Pageable pageable);
+    
+    /**
+     * TODO Auto-generated method documentation
+     * 
+     * @param formUser
+     * @param toUser
+     * @param sendTime
+     * @param sendTime2
+     * @return Long
+     */
+    public abstract long MessagesRepository.countByFormUserOrToUserAndSendTimeGreaterThanEqualAndSendTimeLessThanEqual(String formUser, String toUser, Long sendTime, Long sendTime2);
+    
+    /**
+     * TODO Auto-generated method documentation
+     * 
+     * @param formUser
+     * @param toUser
+     * @param sendTime
+     * @param sendTime2
+     * @param pageable
+     * @return Page
+     */
+    public abstract Page<Messages> MessagesRepository.findByFormUserOrToUserAndSendTimeGreaterThanAndSendTimeLessThanEqual(String formUser, String toUser, Long sendTime, Long sendTime2, Pageable pageable);
+    
+    /**
+     * TODO Auto-generated method documentation
+     * 
+     * @param formUser
+     * @param toUser
+     * @param sendTime
+     * @param sendTime2
+     * @return Long
+     */
+    public abstract long MessagesRepository.countByFormUserOrToUserAndSendTimeGreaterThanAndSendTimeLessThanEqual(String formUser, String toUser, Long sendTime, Long sendTime2);
+    
+    /**
+     * TODO Auto-generated method documentation
+     * 
+     * @param formUser
+     * @param toUser
+     * @param sendTime1
+     * @param sendTime2
+     * @param pageable
+     * @return Page
+     */
+    public abstract Page<Messages> MessagesRepository.findByFormUserOrToUserAndSendTimeBetween(String formUser, String toUser, Long sendTime1, Long sendTime2, Pageable pageable);
+    
+    /**
+     * TODO Auto-generated method documentation
+     * 
+     * @param formUser
+     * @param toUser
+     * @param sendTime1
+     * @param sendTime2
+     * @return Long
+     */
+    public abstract long MessagesRepository.countByFormUserOrToUserAndSendTimeBetween(String formUser, String toUser, Long sendTime1, Long sendTime2);
+    
+    /**
+     * TODO Auto-generated method documentation
+     * 
+     * @param sendTime1
+     * @param sendTime2
+     * @param formUser
+     * @param toUser
+     * @param pageable
+     * @return Page
+     */
+    public abstract Page<Messages> MessagesRepository.findBySendTimeBetweenAndFormUserAndToUser(Long sendTime1, Long sendTime2, String formUser, String toUser, Pageable pageable);
+    
+    /**
+     * TODO Auto-generated method documentation
+     * 
+     * @param sendTime1
+     * @param sendTime2
+     * @param formUser
+     * @param toUser
+     * @return Long
+     */
+    public abstract long MessagesRepository.countBySendTimeBetweenAndFormUserAndToUser(Long sendTime1, Long sendTime2, String formUser, String toUser);
+    
+    /**
+     * TODO Auto-generated method documentation
+     * 
+     * @param sendTime1
+     * @param sendTime2
+     * @param formUser
+     * @param toUser
+     * @param pageable
+     * @return Page
+     */
+    public abstract Page<Messages> MessagesRepository.findBySendTimeBetweenOrFormUserOrToUser(Long sendTime1, Long sendTime2, String formUser, String toUser, Pageable pageable);
+    
+    /**
+     * TODO Auto-generated method documentation
+     * 
+     * @param sendTime1
+     * @param sendTime2
+     * @param formUser
+     * @param toUser
+     * @return Long
+     */
+    public abstract long MessagesRepository.countBySendTimeBetweenOrFormUserOrToUser(Long sendTime1, Long sendTime2, String formUser, String toUser);
+    
+    /**
+     * TODO Auto-generated method documentation
+     * 
+     * @param petUserName
+     * @param sendTime1
+     * @param sendTime2
+     * @param pageable
+     * @return Page
+     */
+    public abstract Page<Messages> MessagesRepository.findByPetUserNameAndSendTimeBetween(String petUserName, Long sendTime1, Long sendTime2, Pageable pageable);
+    
+    /**
+     * TODO Auto-generated method documentation
+     * 
+     * @param petUserName
+     * @param sendTime1
+     * @param sendTime2
+     * @return Long
+     */
+    public abstract long MessagesRepository.countByPetUserNameAndSendTimeBetween(String petUserName, Long sendTime1, Long sendTime2);
+    
+    /**
+     * TODO Auto-generated method documentation
+     * 
+     * @param seat
+     * @param sendTime1
+     * @param sendTime2
+     * @param pageable
+     * @return Page
+     */
+    public abstract Page<Messages> MessagesRepository.findBySeatAndSendTimeBetween(String seat, Long sendTime1, Long sendTime2, Pageable pageable);
+    
+    /**
+     * TODO Auto-generated method documentation
+     * 
+     * @param seat
+     * @param sendTime1
+     * @param sendTime2
+     * @return Long
+     */
+    public abstract long MessagesRepository.countBySeatAndSendTimeBetween(String seat, Long sendTime1, Long sendTime2);
+    
+    /**
+     * TODO Auto-generated method documentation
+     * 
+     * @param seat
+     * @param petUserName
+     * @param sendTime1
+     * @param sendTime2
+     * @param pageable
+     * @return Page
+     */
+    public abstract Page<Messages> MessagesRepository.findBySeatAndPetUserNameAndSendTimeBetween(String seat, String petUserName, Long sendTime1, Long sendTime2, Pageable pageable);
+    
+    /**
+     * TODO Auto-generated method documentation
+     * 
+     * @param seat
+     * @param petUserName
+     * @param sendTime1
+     * @param sendTime2
+     * @return Long
+     */
+    public abstract long MessagesRepository.countBySeatAndPetUserNameAndSendTimeBetween(String seat, String petUserName, Long sendTime1, Long sendTime2);
     
 }

@@ -64,20 +64,75 @@ public class WebSocketPetUsersJsonController {
 	 */
 	@PostMapping("/offline")
 	@ResponseBody
-	public	String	update(@RequestBody	String	req){
-		Console.log(req);
+	public	JSONObject	update(@RequestParam("userName")String userName){
+	    Console.log(userName);
 		ChatRoom	res	=	null;
-		String	username	=	req.substring(req.lastIndexOf("=")+1, req.length());
-		if(username.startsWith("CSD")){
-			String	seat	=	username.replaceAll("CSD", "");
+		JSONObject    result =   new JSONObject();
+        JSONObject  header  =   new JSONObject();
+		if(userName.startsWith("CSD")){
+			String	seat	=	userName.replaceAll("CSD", "");
 			ChatRoom	chatRoom	=	chatroomService.findBySeat(seat);
+			chatRoom.setPetUser(null);
 			chatRoom.setStatus(RoomStatus.下线);
 			res	=	chatroomService.save(chatRoom);
         }
-		JSONObject re = JSONUtil.parseObj(res);
-		return	re+"";
+		if(userName.startsWith("PFU")){
+		    String    petUserName    =   userName.replaceAll("PFU", "");
+            ChatRoom    chatRoom    =   chatroomService.findBySeatAndPetUser("dogness", petUserName);
+            if(chatRoom!=null){
+                chatRoom.setStatus(RoomStatus.下线);
+                res =   chatroomService.save(chatRoom);
+            }
+		}
+		if(res!=null&&res.getStatus().name().equals("下线")){
+		    header.put("code", 1000);
+            header.put("message", "offline");
+            result.put("header", header);
+            result.put("data", userName);
+            return result;
+		}else{
+		    header.put("code", 2000);
+            header.put("message", "fail");
+            result.put("header", header);
+            result.put("data", userName);
+            return result;
+		}
 	}
 	
+	/**
+	 * js/status/online
+	 * 上线
+	 * @param userName
+	 * @return
+	 */
+	@PostMapping("/online")
+    @ResponseBody
+    public  JSONObject  online(@RequestParam("userName")String userName){
+        Console.log(userName);
+        ChatRoom    res =   null;
+        JSONObject    result =   new JSONObject();
+        JSONObject  header  =   new JSONObject();
+        if(userName.startsWith("CSD")){
+            String  seat    =   userName.replaceAll("CSD", "");
+            ChatRoom    chatRoom    =   chatroomService.findBySeat(seat);
+            chatRoom.setStatus(RoomStatus.在线);
+            res =   chatroomService.save(chatRoom);
+        }
+        
+        if(res!=null&&res.getStatus().name().equals("在线")){
+            header.put("code", 1000);
+            header.put("message", "online");
+            result.put("header", header);
+            result.put("data", userName);
+            return result;
+        }else{
+            header.put("code", 2000);
+            header.put("message", "fail");
+            result.put("header", header);
+            result.put("data", userName);
+            return result;
+        }
+    }
 	/**//**
 	 * 接入时获取用户详细信息
 	 * @param id

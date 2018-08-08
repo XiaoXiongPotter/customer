@@ -127,12 +127,16 @@ public class HandlerController {
     	Console.log(SecurityUtils.getCookieByName(request, "sessionId"));
     	//查看客服是否第一次登录，如果不是则创建客服的坐席，如果是则更新状态为在线
     	ChatRoom	chatRoom	=	chatroomService.findBySeat(username);
+    	
     	if(chatRoom==null){
     		ChatRoom	newChatRoom	=	new	ChatRoom();
     		newChatRoom.setSeat(username);
+    		newChatRoom.setSeatAt(System.currentTimeMillis());
     		newChatRoom.setStatus(RoomStatus.在线);
     		chatroomService.save(newChatRoom);
     	}else{
+    	    Console.log("上线");
+    	    chatRoom.setSeatAt(System.currentTimeMillis());
     		chatRoom.setStatus(RoomStatus.在线);
     		chatroomService.save(chatRoom);
     	}

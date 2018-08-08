@@ -14,9 +14,10 @@
 <title>宠联网客服</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <link rel="stylesheet" href="./layui/css/layui.css">
+<link rel="stylesheet"	href="./css/customer.css">
 <link rel="stylesheet" type="text/css" href="./userchat/font_Icon/iconfont.css">
 <style type="text/css">
-	.chat-body{
+ 	.chat-body{
 		position: absolute;
 		background-color: red;
 		top: 80px;
@@ -319,21 +320,14 @@
 </style>
 </head>
 <body class="layui-layout-body">
-<div class="layui-layout layui-layout-admin">
-  <div class="layui-header">
+<div class="layui-layout layui-layout-admin layui-bg-cyan">
+  <div class="layui-header layui-bg-cyan">
     <div class="layui-logo"><img alt="宠联网客服在线" src="/layui/images/img/logo-index.png"	style="height: 80px;width: 200px"></div>
     <!-- 头部区域（可配合layui已有的水平导航） -->
     <ul class="layui-nav layui-layout-left">
       <li class="layui-nav-item"><a href="">用户接入</a></li>
       <li class="layui-nav-item"><a href="">客服管理</a></li>
-      <li class="layui-nav-item">
-        <a href="javascript:;">其它系统</a>
-        <dl class="layui-nav-child">
-          <dd><a href="">邮件管理</a></dd>
-          <dd><a href="">消息管理</a></dd>
-          <dd><a href="">授权管理</a></dd>
-        </dl>
-      </li>
+      
     </ul>
     <ul class="layui-nav layui-layout-right">
       <li class="layui-nav-item"	id="myInfo">
@@ -352,8 +346,8 @@
     </ul>
   </div>
   
-  <div class="layui-side layui-bg-black">
-    <div class="layui-side-scroll">
+  <div class="layui-side layui-bg-cyan">
+    <div class="layui-side-scroll layui-bg-cyan">
       <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
       <ul class="layui-nav layui-nav-tree"  lay-filter="test">
         <li class="layui-nav-item layui-nav-itemed">
@@ -377,6 +371,11 @@
           
           </dl>
         </li>
+        <li class="layui-nav-item">
+	        <a href="javascript:;">转接客服</a>
+		        <dl class="layui-nav-child"	id="zhuanjie">
+		        </dl>
+	      </li>
       </ul>
     </div>
   </div>
@@ -390,30 +389,29 @@
     <!-- 右侧显示聊天框 -->
     <div	class="chat-box">
     	<div	class="title">
-    	<ul class="layui-nav layui-layout-right">
-	      <li class="layui-nav-item">
-	        <a href="javascript:;">转接客服</a>
-	        <dl class="layui-nav-child"	id="zhuanjie">
-	        </dl>
-	      </li>
-	    </ul>
+    	
     	</div>
     	<div	class="content"></div>
     	<div	class="im-chat-box">
     		<div	class="chat-show">
     			<div	class="chat-main">
+    			<div	class="show-sk">
+                	<div class="sk-three-bounce">
+			        	
+			      	</div>
+                </div>
     			<div	class="layim-chat-main"	id="printMsg">
     				<ul>
     					<!-- 用户的输出语句 -->
-						<li>
+						<!-- <li>
 							<div class="layim-chat-user"> <img src="/layui/images/img/tu2.png"> <cite class="layim-chat-user-cite">tml <i>2018-07-13 18:00:37</i> </cite> </div>
 							<div class="layim-chat-user-text">zkolp</div>
-						</li>
+						</li> -->
 						<!-- 我的输出语句 -->
-						<li class="layim-chat-mine">
+						<!-- <li class="layim-chat-mine">
 							<div class="layim-chat-user"> <img src="/layui/images/img/tu2.png"> <cite><i>2018-07-12 21:45:11</i>707</cite> </div>
 							<div class="layim-chat-text">ssss</div>
-						</li>
+						</li> -->
 						
 					</ul>
     			</div>
@@ -457,7 +455,7 @@
 </div>
 <script src="./layui/jquery-2.1.4.js"></script>
 <script src="./layui/layui.js"></script>
-<script src="./js/message.js"></script>
+<script src="./js/customer.js"></script>
 <script src="./userchat/js/jquery.qqFace.js"></script>
 <script src="./webjars/sockjs-client/1.1.2/sockjs.min.js"></script>
 <script src="./webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
@@ -475,6 +473,8 @@
 	var	seat;
 	var	myInfo;
 	var	message;
+	var	sendData;
+	var	tousername;
 	$(function	(){
 		 /* $.ajax({
 			type: "POST", //GET或POST,
@@ -531,6 +531,7 @@
 	var websocket;
 	if ('WebSocket' in window) {
 		websocket = new WebSocket(getWeSocket()+"?uid="+seat);
+		console.log(websocket)
 	} else if ('MozWebSocket' in window) {
 		websocket = new MozWebSocket(getWeSocket()+seat);
 	} else {
@@ -541,23 +542,52 @@
 		console.log(data)
 		if(data.header.code==6000){
 			console.log("获取到的在线客服列表");
-			console.log(data.data.CSD)
+			
 			var	CSD		=	data.data.CSD;
 			var	CSDlen	=	data.data.CSD.length;
+			var	PFU		=	data.data.PFU;
+			var	PFUlen	=	data.data.PFU.length;
 			if(CSDlen>0){
+				console.log(data.data.CSD)
 				for(var	i=0;i<CSDlen;i++){
-					var	result	=	'<dd><a href="">'
-								+	CSD[i]
-								+	'</a></dd>'
-					$("#zhuanjie").append(result);
+					//查询客服在线空闲
+					$.ajax({
+						type: "POST", //GET或POST,
+						async:true, //默认设置为true，所有请求均为异步请求。
+						url: "/js/chatrooms/get_can_get_time",
+						data: {
+							seat:CSD[i].substring(3)
+						},
+						dataType: "json", //xml、html、script、jsonp、text
+						success: function(data) {
+							console.log("空闲客服")
+							console.log(data)
+							if(data.res.length>0){
+								for(var	m=0;m<data.res.length;m++){
+									var	result	=	'<dd><a href="" onclick="zhuanjie(this.id)" id="CSD'+data.res[m]+'">'
+												+	data.res[m]
+												+	'</a></dd>'
+									$("#zhuanjie").append(result);
+								}
+							}
+						},
+						error:function(){},
+					});
+					
 				}
 				
 			}
 			console.log("获取到的在线用户列表");
-			console.log(data.data.PFU)
-			if(data.data.PFU.length>0){
+			
+			if(PFUlen>0){
+				console.log(data.data.PFU)
+				for(var	i=0;i<PFUlen;i++){
+					
+					var result = '<dd class="'+PFU[i]+'"><a href="#"	onclick="jr(this.id)"	id="'+PFU[i]+'">'+PFU[i].substring(3)+'</a></dd>'
+					$("#userOnline").append(result)
+				}
 	        	//调用后台查询那些是没有接入的
-	        	get_petUser_is_accessing(data.data.PFU);
+	        	//get_petUser_is_accessing(data.data.PFU);
 	        } else {
 	            //没有请求用户的情况
 	            console.log("无用户")
@@ -567,8 +597,13 @@
 			console.log("上线");
 			console.log(data.data);
 			var mycars=new Array(data.data);
+			for(var	i=0;i<mycars.length;i++){
+				
+				var result = '<dd class="'+mycars[i]+'"><a href="#"	onclick="jr(this.id)"	id="'+mycars[i]+'">'+mycars[i].substring(3)+'</a></dd>'
+				$("#userOnline").append(result)
+			}
 			//调用后台查询那些是没有接入的
-        	get_petUser_is_accessing(mycars);
+        	//get_petUser_is_accessing(mycars);
 		}
 		if(data.header.code==6003){
 			console.log("下线");
@@ -579,7 +614,22 @@
 				getImage(data.data)
 			}
 			if(data.data.msgType=='Text'){
-				getMessage(data.data)
+				
+				var	fromUser	=	data.data.fromUser;
+				if(data.data.content=='人工'){
+					$("#djr").append($('#'+fromUser).clone());
+					$('.'+fromUser).detach();
+				}
+				else	if(data.data.content.substring(0,8)=='Transfer'){
+					alertTransfer(data.data.content.substring(9))
+				}
+				else	if(data.data.content.substring(0,10)=='DenyAccess'){
+					
+					alertDenyAccess(data.data.content.substring(11))
+				}
+				else{
+					getMessage(data.data)
+				}
 			}
 		}
 	}
@@ -664,8 +714,7 @@
 				error:function(){},
 			}); 
 		} */
-	var	sendData;
-	var	tousername;
+	
 	//接入操作
 	function	jr(id){
 		console.log("用户ID>>>")
@@ -683,13 +732,30 @@
 				dataType: "json", //xml、html、script、jsonp、text
 				success: function(data) {
 					console.log(data)
+					petUser	=	data.res.toUser;
+					var	customer	=	data.res.formUser;
+					var	sendTime	=	data.res.sendTime;
+					var	avatar	=	data.res.avatar;
+					var	content	=	data.res.content;
 					if(data.code==0){
-						room	=	data.sign;
+						room	=	customer;
 						PETUSER	=	data;
-						$('#PFU'+data.res.username).detach();
-						var result = '<dd class="'+data.res.username+'"><a href="#"	onclick="switchUser(this.id)"	id="'+data.res.username+'">'+data.res.username+'</a></dd>'
+						$('#PFU'+petUser).detach();
+						var result = '<dd class="'+petUser+'"><a href="#"	onclick="switchUser(this.id)"	id="'+petUser+'">'+petUser+'</a></dd>'
 						$("#Receiving").append(result);
 						
+						var	mineMsg	=	'<li class="layim-chat-mine">'
+									+	'<div class="layim-chat-user"> <img src="'
+									+	avatar
+									+	'"><cite><i>'
+									+	format(sendTime)
+									+	'</i>'
+									+	customer
+									+	'</cite> </div><div class="layim-chat-text">'
+									+	content
+									+	'</div>'
+									+	'</li>';
+						$("#printMsg ul").append(mineMsg);
 					}else{
 						var	content	=	"接入失败";
 						alertInfo(content);
@@ -791,6 +857,7 @@
 					+	'</li>';
 		$("#printMsg ul").append(mineMsg);
 	}
+	
 	function	printUserMessage(json){
 		var	userMsg	=	'<li>'
 					+	'<div class="layim-chat-user"> <img src="/layui/images/img/tu2.png"> <cite class="layim-chat-user-cite">'
@@ -838,6 +905,28 @@
 					+	'"></div>'
 					+	'</li>';
 		$("#printMsg ul").append(mineMsg);
+    }
+    //查询待接入用户
+    queryPendingAccess();
+    function	queryPendingAccess(){
+    	$.ajax({
+			type: "POST", //GET或POST,
+			async:true, //默认设置为true，所有请求均为异步请求。
+			url: "/js/chatrooms/query_pending_access",
+			dataType: "json", //xml、html、script、jsonp、text
+			success: function(data) {
+				console.log("持久的待接入的")
+				console.log(data)
+				var	array	=	data.res;
+				if(array.length>0){
+					for(var	i=0;i<array.length;i++){
+						var result = '<dd class="PFU'+array[i]+'"><a href="#"	onclick="jr(this.id)"	id="PFU'+array[i]+'">'+array[i]+'</a></dd>'
+						$("#djr").append(result)
+					}
+				}
+			},
+			error:function(){},
+		});
     }
 </script>
 </body>

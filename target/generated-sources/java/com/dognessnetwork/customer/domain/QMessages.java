@@ -27,7 +27,11 @@ public class QMessages extends EntityPathBase<Messages> {
 
     public final EnumPath<MessageType> messageType = createEnum("messageType", MessageType.class);
 
+    public final StringPath petUserName = createString("petUserName");
+
     public final StringPath postMessages = createString("postMessages");
+
+    public final StringPath seat = createString("seat");
 
     public final NumberPath<Long> sendTime = createNumber("sendTime", Long.class);
 

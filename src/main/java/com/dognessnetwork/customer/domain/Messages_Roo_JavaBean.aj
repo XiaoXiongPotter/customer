@@ -171,4 +171,40 @@ privileged aspect Messages_Roo_JavaBean {
         this.startTime = startTime;
     }
     
+    /**
+     * TODO Auto-generated method documentation
+     * 
+     * @return String
+     */
+    public String Messages.getPetUserName() {
+        return this.petUserName;
+    }
+    
+    /**
+     * TODO Auto-generated method documentation
+     * 
+     * @param petUserName
+     */
+    public void Messages.setPetUserName(String petUserName) {
+        this.petUserName = petUserName;
+    }
+    
+    /**
+     * TODO Auto-generated method documentation
+     * 
+     * @return String
+     */
+    public String Messages.getSeat() {
+        return this.seat;
+    }
+    
+    /**
+     * TODO Auto-generated method documentation
+     * 
+     * @param seat
+     */
+    public void Messages.setSeat(String seat) {
+        this.seat = seat;
+    }
+    
 }

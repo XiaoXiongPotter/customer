@@ -5,6 +5,7 @@ package com.dognessnetwork.customer.service.impl;
 
 import com.dognessnetwork.customer.domain.ChatRoom;
 import com.dognessnetwork.customer.domain.Comment;
+import com.dognessnetwork.customer.domain.RoomStatus;
 import com.dognessnetwork.customer.repository.ChatRoomRepository;
 import com.dognessnetwork.customer.service.api.CommentService;
 import com.dognessnetwork.customer.service.impl.ChatRoomServiceImpl;
@@ -259,6 +260,52 @@ privileged aspect ChatRoomServiceImpl_Roo_Service_Impl {
      */
     public Page<ChatRoom> ChatRoomServiceImpl.findAllByIdsIn(List<Long> ids, GlobalSearch globalSearch, Pageable pageable) {
         return getChatRoomRepository().findAllByIdsIn(ids, globalSearch, pageable);
+    }
+    
+    /**
+     * TODO Auto-generated method documentation
+     * 
+     * @param seat
+     * @param pageable
+     * @return Page
+     */
+    public Page<ChatRoom> ChatRoomServiceImpl.findBySeat(String seat, Pageable pageable) {
+        return getChatRoomRepository().findBySeat(seat, pageable);
+    }
+    
+    /**
+     * TODO Auto-generated method documentation
+     * 
+     * @param seat
+     * @param petUser
+     * @param status
+     * @param pageable
+     * @return Page
+     */
+    public Page<ChatRoom> ChatRoomServiceImpl.findBySeatAndPetUserAndStatus(String seat, String petUser, RoomStatus status, Pageable pageable) {
+        return getChatRoomRepository().findBySeatAndPetUserAndStatus(seat, petUser, status, pageable);
+    }
+    
+    /**
+     * TODO Auto-generated method documentation
+     * 
+     * @param seat
+     * @return Long
+     */
+    public long ChatRoomServiceImpl.countBySeat(String seat) {
+        return getChatRoomRepository().countBySeat(seat);
+    }
+    
+    /**
+     * TODO Auto-generated method documentation
+     * 
+     * @param seat
+     * @param petUser
+     * @param status
+     * @return Long
+     */
+    public long ChatRoomServiceImpl.countBySeatAndPetUserAndStatus(String seat, String petUser, RoomStatus status) {
+        return getChatRoomRepository().countBySeatAndPetUserAndStatus(seat, petUser, status);
     }
     
     /**

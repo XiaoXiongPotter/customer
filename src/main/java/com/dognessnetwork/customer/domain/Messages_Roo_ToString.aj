@@ -21,6 +21,8 @@ privileged aspect Messages_Roo_ToString {
                 ", formUser='" + formUser + '\'' + 
                 ", toUser='" + toUser + '\'' + 
                 ", startTime='" + startTime + '\'' + 
+                ", petUserName='" + petUserName + '\'' + 
+                ", seat='" + seat + '\'' + 
                 ", ITERABLE_TO_ADD_CANT_BE_NULL_MESSAGE='" + ITERABLE_TO_ADD_CANT_BE_NULL_MESSAGE + '\'' + 
                 ", ITERABLE_TO_REMOVE_CANT_BE_NULL_MESSAGE='" + ITERABLE_TO_REMOVE_CANT_BE_NULL_MESSAGE + '\'' + "}" + super.toString();
     }

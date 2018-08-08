@@ -9,6 +9,7 @@ import java.util.HashMap;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,6 +31,8 @@ import cn.hutool.json.JSONUtil;
 @RestController
 @RequestMapping(value = "/js/robot",name = "RobotMessageJson")
 public class RobotMessageJson {
+    @Value("${document.image}")
+    private String sendImage;
 	/**
 	 * /js/robot/get_message_robot
 	 * @param content
@@ -65,7 +68,7 @@ public class RobotMessageJson {
                 ImageIO.write(ImageUtil.toImage(data),"png",filePath);
                 HashMap<String, Object> paramMap = new HashMap<>();
                 paramMap.put("file", FileUtil.file(filePath.getPath()));
-                String  result= HttpUtil.post("https://www.dognessnetwork.com/document/image", paramMap);
+                String  result= HttpUtil.post(sendImage, paramMap);
                 Console.log(result);
                 JSONObject  js  =   JSONUtil.parseObj(result);
                 JSONObject  header  =   JSONUtil.parseObj(js.get("header"));

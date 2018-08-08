@@ -65,6 +65,18 @@ privileged aspect MessagesRepositoryImpl_Roo_Jpa_Repository_Impl {
     public static final String MessagesRepositoryImpl.START_TIME = "startTime";
     
     /**
+     * TODO Auto-generated attribute documentation
+     * 
+     */
+    public static final String MessagesRepositoryImpl.PET_USER_NAME = "petUserName";
+    
+    /**
+     * TODO Auto-generated attribute documentation
+     * 
+     */
+    public static final String MessagesRepositoryImpl.SEAT = "seat";
+    
+    /**
      * TODO Auto-generated method documentation
      * 
      * @param globalSearch
@@ -77,7 +89,7 @@ privileged aspect MessagesRepositoryImpl_Roo_Jpa_Repository_Impl {
         
         JPQLQuery<Messages> query = from(messages);
         
-        Path<?>[] paths = new Path<?>[] {messages.postMessages,messages.sendTime,messages.formUser,messages.toUser,messages.messageType,messages.messageStatus,messages.startTime};        
+        Path<?>[] paths = new Path<?>[] {messages.postMessages,messages.sendTime,messages.formUser,messages.toUser,messages.messageType,messages.messageStatus,messages.startTime,messages.petUserName,messages.seat};        
         applyGlobalSearch(globalSearch, query, paths);
         
         AttributeMappingBuilder mapping = buildMapper()
@@ -87,7 +99,9 @@ privileged aspect MessagesRepositoryImpl_Roo_Jpa_Repository_Impl {
 			.map(TO_USER, messages.toUser)
 			.map(MESSAGE_TYPE, messages.messageType)
 			.map(MESSAGE_STATUS, messages.messageStatus)
-			.map(START_TIME, messages.startTime);
+			.map(START_TIME, messages.startTime)
+			.map(PET_USER_NAME, messages.petUserName)
+			.map(SEAT, messages.seat);
         
         applyPagination(pageable, query, mapping);
         applyOrderById(query);
@@ -109,7 +123,7 @@ privileged aspect MessagesRepositoryImpl_Roo_Jpa_Repository_Impl {
         
         JPQLQuery<Messages> query = from(messages);
         
-        Path<?>[] paths = new Path<?>[] {messages.postMessages,messages.sendTime,messages.formUser,messages.toUser,messages.messageType,messages.messageStatus,messages.startTime};        
+        Path<?>[] paths = new Path<?>[] {messages.postMessages,messages.sendTime,messages.formUser,messages.toUser,messages.messageType,messages.messageStatus,messages.startTime,messages.petUserName,messages.seat};        
         applyGlobalSearch(globalSearch, query, paths);
         
         // Also, filter by the provided ids
@@ -122,7 +136,9 @@ privileged aspect MessagesRepositoryImpl_Roo_Jpa_Repository_Impl {
 			.map(TO_USER, messages.toUser)
 			.map(MESSAGE_TYPE, messages.messageType)
 			.map(MESSAGE_STATUS, messages.messageStatus)
-			.map(START_TIME, messages.startTime);
+			.map(START_TIME, messages.startTime)
+			.map(PET_USER_NAME, messages.petUserName)
+			.map(SEAT, messages.seat);
         
         applyPagination(pageable, query, mapping);
         applyOrderById(query);

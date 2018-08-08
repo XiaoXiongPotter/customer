@@ -102,4 +102,205 @@ privileged aspect MessagesService_Roo_Service {
      */
     public abstract Page<Messages> MessagesService.findAllByIdsIn(List<Long> ids, GlobalSearch globalSearch, Pageable pageable);
     
+    /**
+     * TODO Auto-generated method documentation
+     * 
+     * @param formUser
+     * @param toUser
+     * @param sendTime
+     * @param pageable
+     * @return Page
+     */
+    public abstract Page<Messages> MessagesService.findByFormUserOrToUserAndSendTimeGreaterThanEqual(String formUser, String toUser, Long sendTime, Pageable pageable);
+    
+    /**
+     * TODO Auto-generated method documentation
+     * 
+     * @param formUser
+     * @param toUser
+     * @param sendTime
+     * @param sendTime2
+     * @param pageable
+     * @return Page
+     */
+    public abstract Page<Messages> MessagesService.findByFormUserOrToUserAndSendTimeGreaterThanEqualAndSendTimeLessThanEqual(String formUser, String toUser, Long sendTime, Long sendTime2, Pageable pageable);
+    
+    /**
+     * TODO Auto-generated method documentation
+     * 
+     * @param formUser
+     * @param toUser
+     * @param sendTime
+     * @param sendTime2
+     * @param pageable
+     * @return Page
+     */
+    public abstract Page<Messages> MessagesService.findByFormUserOrToUserAndSendTimeGreaterThanAndSendTimeLessThanEqual(String formUser, String toUser, Long sendTime, Long sendTime2, Pageable pageable);
+    
+    /**
+     * TODO Auto-generated method documentation
+     * 
+     * @param formUser
+     * @param toUser
+     * @param sendTime1
+     * @param sendTime2
+     * @param pageable
+     * @return Page
+     */
+    public abstract Page<Messages> MessagesService.findByFormUserOrToUserAndSendTimeBetween(String formUser, String toUser, Long sendTime1, Long sendTime2, Pageable pageable);
+    
+    /**
+     * TODO Auto-generated method documentation
+     * 
+     * @param sendTime1
+     * @param sendTime2
+     * @param formUser
+     * @param toUser
+     * @param pageable
+     * @return Page
+     */
+    public abstract Page<Messages> MessagesService.findBySendTimeBetweenAndFormUserAndToUser(Long sendTime1, Long sendTime2, String formUser, String toUser, Pageable pageable);
+    
+    /**
+     * TODO Auto-generated method documentation
+     * 
+     * @param sendTime1
+     * @param sendTime2
+     * @param formUser
+     * @param toUser
+     * @param pageable
+     * @return Page
+     */
+    public abstract Page<Messages> MessagesService.findBySendTimeBetweenOrFormUserOrToUser(Long sendTime1, Long sendTime2, String formUser, String toUser, Pageable pageable);
+    
+    /**
+     * TODO Auto-generated method documentation
+     * 
+     * @param petUserName
+     * @param sendTime1
+     * @param sendTime2
+     * @param pageable
+     * @return Page
+     */
+    public abstract Page<Messages> MessagesService.findByPetUserNameAndSendTimeBetween(String petUserName, Long sendTime1, Long sendTime2, Pageable pageable);
+    
+    /**
+     * TODO Auto-generated method documentation
+     * 
+     * @param seat
+     * @param sendTime1
+     * @param sendTime2
+     * @param pageable
+     * @return Page
+     */
+    public abstract Page<Messages> MessagesService.findBySeatAndSendTimeBetween(String seat, Long sendTime1, Long sendTime2, Pageable pageable);
+    
+    /**
+     * TODO Auto-generated method documentation
+     * 
+     * @param seat
+     * @param petUserName
+     * @param sendTime1
+     * @param sendTime2
+     * @param pageable
+     * @return Page
+     */
+    public abstract Page<Messages> MessagesService.findBySeatAndPetUserNameAndSendTimeBetween(String seat, String petUserName, Long sendTime1, Long sendTime2, Pageable pageable);
+    
+    /**
+     * TODO Auto-generated method documentation
+     * 
+     * @param formUser
+     * @param toUser
+     * @param sendTime
+     * @return Long
+     */
+    public abstract long MessagesService.countByFormUserOrToUserAndSendTimeGreaterThanEqual(String formUser, String toUser, Long sendTime);
+    
+    /**
+     * TODO Auto-generated method documentation
+     * 
+     * @param formUser
+     * @param toUser
+     * @param sendTime
+     * @param sendTime2
+     * @return Long
+     */
+    public abstract long MessagesService.countByFormUserOrToUserAndSendTimeGreaterThanEqualAndSendTimeLessThanEqual(String formUser, String toUser, Long sendTime, Long sendTime2);
+    
+    /**
+     * TODO Auto-generated method documentation
+     * 
+     * @param formUser
+     * @param toUser
+     * @param sendTime
+     * @param sendTime2
+     * @return Long
+     */
+    public abstract long MessagesService.countByFormUserOrToUserAndSendTimeGreaterThanAndSendTimeLessThanEqual(String formUser, String toUser, Long sendTime, Long sendTime2);
+    
+    /**
+     * TODO Auto-generated method documentation
+     * 
+     * @param formUser
+     * @param toUser
+     * @param sendTime1
+     * @param sendTime2
+     * @return Long
+     */
+    public abstract long MessagesService.countByFormUserOrToUserAndSendTimeBetween(String formUser, String toUser, Long sendTime1, Long sendTime2);
+    
+    /**
+     * TODO Auto-generated method documentation
+     * 
+     * @param sendTime1
+     * @param sendTime2
+     * @param formUser
+     * @param toUser
+     * @return Long
+     */
+    public abstract long MessagesService.countBySendTimeBetweenAndFormUserAndToUser(Long sendTime1, Long sendTime2, String formUser, String toUser);
+    
+    /**
+     * TODO Auto-generated method documentation
+     * 
+     * @param sendTime1
+     * @param sendTime2
+     * @param formUser
+     * @param toUser
+     * @return Long
+     */
+    public abstract long MessagesService.countBySendTimeBetweenOrFormUserOrToUser(Long sendTime1, Long sendTime2, String formUser, String toUser);
+    
+    /**
+     * TODO Auto-generated method documentation
+     * 
+     * @param petUserName
+     * @param sendTime1
+     * @param sendTime2
+     * @return Long
+     */
+    public abstract long MessagesService.countByPetUserNameAndSendTimeBetween(String petUserName, Long sendTime1, Long sendTime2);
+    
+    /**
+     * TODO Auto-generated method documentation
+     * 
+     * @param seat
+     * @param sendTime1
+     * @param sendTime2
+     * @return Long
+     */
+    public abstract long MessagesService.countBySeatAndSendTimeBetween(String seat, Long sendTime1, Long sendTime2);
+    
+    /**
+     * TODO Auto-generated method documentation
+     * 
+     * @param seat
+     * @param petUserName
+     * @param sendTime1
+     * @param sendTime2
+     * @return Long
+     */
+    public abstract long MessagesService.countBySeatAndPetUserNameAndSendTimeBetween(String seat, String petUserName, Long sendTime1, Long sendTime2);
+    
 }

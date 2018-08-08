@@ -53,22 +53,21 @@ public class Messages {
     @Column(name = "post_messages")
     private String postMessages;
 
-
     /**
      * TODO Auto-generated attribute documentation
-     *发送消息的当前时间戳
+     *发�?�消息的当前时间�?
      */
     private Long sendTime;
 
     /**
      * TODO Auto-generated attribute documentation
-     *发送者
+     *发�?��??
      */
     private String formUser;
 
     /**
      * TODO Auto-generated attribute documentation
-     *接收者
+     *接收�?
      */
     private String toUser;
 
@@ -78,14 +77,26 @@ public class Messages {
      */
     @Enumerated
     private MessageType messageType;
-    
+
     /**
-     * 消息送达状态
+     * 消息送达状�??
      */
-    private	MessageStatus	messageStatus;
-    
+    private MessageStatus messageStatus;
+
     /**
      * 接入时间
      */
-    private	Long	startTime;
+    private Long startTime;
+
+    /**
+     * TODO Auto-generated attribute documentation
+     *
+     */
+    private String petUserName;
+
+    /**
+     * TODO Auto-generated attribute documentation
+     *
+     */
+    private String seat;
 }

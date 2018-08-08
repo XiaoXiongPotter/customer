@@ -595,6 +595,7 @@
 	</dependencies>
 
 	<build>
+	<finalName>customer</finalName>
 		<pluginManagement>
 			<plugins>
 				<plugin>
@@ -724,6 +725,7 @@
 		</pluginManagement>
 
 		<plugins>
+	
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>

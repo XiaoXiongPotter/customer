@@ -1,17 +1,26 @@
 package com.dognessnetwork.customer.controller.json;
+import com.dognessnetwork.customer.domain.ChatRoom;
 import com.dognessnetwork.customer.domain.MessageStatus;
 import com.dognessnetwork.customer.domain.MessageType;
 import com.dognessnetwork.customer.domain.Messages;
+import com.dognessnetwork.customer.domain.RoomStatus;
 import com.dognessnetwork.customer.dto.Msg;
+import com.dognessnetwork.customer.service.api.ChatRoomService;
 import com.dognessnetwork.customer.service.api.MessagesService;
+import com.dognessnetwork.customer.util.DateUtils;
+import com.dognessnetwork.customer.util.MessagesFactory;
+import com.dognessnetwork.customer.util.Robot;
 import com.dognessnetwork.customer.util.SendImg;
 import com.dognessnetwork.customer.util.StringToNumber;
 import com.dognessnetwork.customer.util.WebSocketClient;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.Console;
+import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -39,6 +48,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class MessagesesCollectionJsonController {
     @Autowired
     WebSocketClient webSocketClient;
+    @Autowired
+    ChatRoomService chatroomService;
+    
     @Value("${document.image}")
     private String uploadImagePath;
 	/**
@@ -56,37 +68,19 @@ public class MessagesesCollectionJsonController {
 			@RequestParam("postMessages")String	postMessages){
 		Console.log("formUserId"+formUser+">>>"+"toUserId"+toUser+"postMessages"+postMessages);
 		//PetUser	formUser	=	petUserService.findOne(formUserId);
-		Long  time    =   new   Date().getTime();
+		Messages  messages    =   MessagesFactory.getMessages("Text", formUser, toUser, postMessages);
+		/*Long  time    =   System.currentTimeMillis();
 		Messages	messages	=	new	Messages();
 		messages.setFormUser(formUser);
 		messages.setPostMessages(postMessages);
 		messages.setToUser(toUser);
 		messages.setMessageType(MessageType.Text);
-		messages.setSendTime(time);
-		
-		if(postMessages.equals("人工")){
-		    Msg   msg =   new Msg();
-	        msg.setContent(postMessages);
-	        msg.setFromUser(formUser);
-	        msg.setToUser(toUser);
-	        msg.setUserName(formUser.substring(3));
-	        msg.setMsgType(MessageType.Text.toString());
-	        
-	        msg.setMsgId(Long.parseLong(StringToNumber.letterToNumber(postMessages)+""));
-	        msg.setSendTime(time);
-		    webSocketClient.customerSend("/"+msg.getToUser(), msg);
-		    JSONObject  js  =   new JSONObject();
-		    js.put("res", "0");
-		    return  js+"";
+		messages.setSendTime(time);*/
+		if(formUser.startsWith("PFU")&&postMessages.equals("人工")){
+		    return    getMessagesService().requestCustomerService(formUser, toUser, postMessages);
         }else{
-            Messages    newMessages =   getMessagesService().save(messages);
-            Console.log(newMessages);
-            JSONObject  js  =   new JSONObject();
-                js.put("res", "1");
-            if(newMessages!=null){
-                js.put("res", "0");
-            }
-            return  js+"";
+            return    getMessagesService().sendMsg(messages);
+            
         }
 		
 	}
@@ -97,23 +91,17 @@ public class MessagesesCollectionJsonController {
             @RequestParam("formUser")String formUser,
             @RequestParam("toUser")String   toUser,
             @RequestParam("postMessages")String postMessages){
-        Console.log("formUserId"+formUser+">>>"+"toUserId"+toUser+"postMessages"+postMessages);
+        //Console.log("formUserId"+formUser+">>>"+"toUserId"+toUser+"postMessages"+postMessages);
         //PetUser   formUser    =   petUserService.findOne(formUserId);
         //SendImg.get_Image_base(request, postMessages);
-        Messages    messages    =   new Messages();
+        /*Messages    messages    =   new Messages();
         messages.setFormUser(formUser);
         messages.setPostMessages(SendImg.get_Image_base(request, postMessages,uploadImagePath));
         messages.setToUser(toUser);
         messages.setMessageType(MessageType.Picture);
-        messages.setSendTime(new    Date().getTime());
-        Messages    newMessages =   getMessagesService().save(messages);
-        Console.log(newMessages);
-        JSONObject  js  =   new JSONObject();
-            js.put("res", "1");
-        if(newMessages!=null){
-            js.put("res", "0");
-        }
-        return  js+"";
+        messages.setSendTime(new    Date().getTime());*/
+        /*Messages  messages    =   ;*/
+        return  getMessagesService().sendMsg(MessagesFactory.getMessages("Picture", formUser, toUser, SendImg.get_Image_base(request, postMessages,uploadImagePath)));
     }
 	/**
 	 * 更新消息状态
@@ -138,4 +126,48 @@ public class MessagesesCollectionJsonController {
 		}
 		
 	}
+	
+	 /**
+	  * js/messageses/messageHistory
+	  * 查询历史消息
+	  * @param sendTime
+	  * @param thatDay
+	  * @return
+	  */
+    @PostMapping("/messageHistory")
+    @ResponseBody
+    public  JSONObject  messageHistory(
+            @RequestParam("userName")String  userName,
+            @RequestParam("thatDay")Long  thatDay){
+        Date    date    =   new Date(thatDay);
+        Long    beginDay    =   DateUtils.getDayStartTime(date).getTime();
+        Long    endDay  =   DateUtils.getDayEndTime(date).getTime();
+        List<Messages>  listMessages    =null;
+        if(userName.startsWith("PFU")){
+            listMessages    =   getMessagesService().findByPetUserNameAndSendTimeBetween(userName, beginDay, endDay, null).getContent();
+        }
+        if(userName.startsWith("CSD")){
+            listMessages    =   getMessagesService().findBySeatAndSendTimeBetween(userName, beginDay, endDay, null).getContent();
+        }
+        Console.log("时间"+thatDay);
+        Console.log(listMessages);
+        JSONObject  res =   new JSONObject();
+        JSONObject  header  =   new JSONObject();
+        JSONArray   list    =   new JSONArray();
+        header.put("status", 2000);
+        header.put("message", "fail");
+        res.put("header", header);
+        res.put("data", list);
+        if(listMessages.size()>0)
+            for (Messages messages : listMessages) {
+                list.put(messages);
+            }
+        if(list.size()>0){
+            header.put("status", 1000);
+            header.put("message", "success");
+            res.put("header", header);
+            res.put("data", list);
+        }
+        return res;
+    }
 }
