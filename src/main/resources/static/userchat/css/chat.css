@@ -405,7 +405,7 @@
 .chatBox-send>div{
     float: left;
 }
-.chatBox-send>div:nth-of-type(2){
+.chatBox-send>div:nth-of-type(3){
     font-size: 0;
 }
 .chatBox-send>div button{
@@ -501,14 +501,14 @@
         max-width: 240px;
     }
 }
-.qqFace{
+/*.qqFace{
 	box-sizing: border-box;
 	position: absolute; 
-	/* z-index: 1000; */ 
+	z-index: 1000;
 	bottom: 66px; 
 	width:100px;
 	left: 0px;
-}
+}*/
     /*
  *  Usage:
  *
