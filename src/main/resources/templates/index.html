@@ -67,24 +67,31 @@
 		background-color: buttonface;
 	}
 	.chat-main{
-		height: 80%;
+		height: 62%;
+		overflow-y:auto;
 		/* background-color: lime; */
 	}
 	.chat-footer{
-		
+		position:relative;
 		width:100%;
-		height: 20%;
+		height: 38%;
 		background-color: white; 
 	}
+	.qqFace{
+		position: absolute;
+		top:-120px;
+	}
+	.qqFace td{
+		cursor: pointer;
+	}
 	.chat-tool{
-		height: 20%;
+		/*height: 20%;*/
 	}
 	.chat-textarea{
-		float: left;
-		height: auto;
-		width:80%;
+		height: 88%;
+		width:98%;
 	    line-height: 100%;
-	    padding: 6px 10px;
+	    padding: 0px 10px;
 	    resize: vertical;
 	}
 	textarea{
@@ -96,8 +103,7 @@
 	    resize: vertical;
 	}
 	.chat-bottom{
-		float: left;
-		width:92px;
+		width:100%;
 		margin-left: 20px;
 		margin-bottom: 0;
 	}
@@ -112,7 +118,14 @@
 		width: 92px;
 		height: 38px;
 		bottom:0;
+		float: right;
+		margin-right: 85px;
 		
+	}
+	#send{
+		height:32px;
+		line-height:32px;
+		margin-top:13px;
 	}
 	
 	.layim-chat-main ul .layim-chat-mine{text-align: right; padding-left: 0; padding-right: 60px;}
@@ -135,17 +148,22 @@
     position: relative;
     line-height: 22px;
     margin-top: 25px;
-    padding: 8px 15px;
+    padding: 8px;
     border-radius: 3px;
     word-break: break-all;
         display: inline-block;
     vertical-align: top;
     font-size: 14px;
+    max-width: 62%;
+     text-align: left;
 	}
 	.layim-chat-user{
 		position: absolute;
 		left: auto;
     	right: 3px;
+	}
+	.layim-chat-mine .layim-chat-text img{
+		max-width: 250px;
 	}
 	.layim-chat-user img{
 		width: 40px;
@@ -194,12 +212,12 @@
 		position: relative;
 	    line-height: 22px;
 	    margin-top: 25px;
-	    padding: 8px 15px;
+	    padding: 8px;
 	    padding-top: 8px;
-	    padding-right: 15px;
+	    padding-right: 8px;
 	    padding-bottom: 8px;
-	    padding-left: 15px;
-	    background-color: #e2e2e2;
+	    padding-left: 8px;
+	    background-color: #2F4056;
 	    border-radius: 3px;
 	    border-top-left-radius: 3px;
 	    border-top-right-radius: 3px;
@@ -208,8 +226,12 @@
 	    display: inline-block;
 	    vertical-align: top;
 	    font-size: 14px;
-	    color: #333;
+	    color: #fff;
 	    word-break: break-all;
+	    max-width: 62%;
+	}
+	.layim-chat-user-text img{
+		max-width:250px;
 	}
 	.layim-chat-user-cite{
 		position: absolute;
@@ -240,7 +262,7 @@
 	    border-bottom-style: dashed;
 	    border-left-style: dashed;
 	    border-color: transparent;
-	    border-top-color: #e2e2e2;
+	    border-top-color: #2F4056;
 	    border-right-color: transparent;
 	    border-bottom-color: transparent;
 	    border-left-color: transparent;
@@ -253,17 +275,13 @@
 	    border-bottom-width: 10px;
 	    border-left-width: 10px;
 	    border-top-style: solid;
-	    border-top-color: #e2e2e2;
+	    border-top-color: #2F4056;
 	}
 	.chat-textarea textarea{
 		display: block;
 	    width: 100%;
-	    padding: 5px 0 0 0;
-	        padding-top: 5px;
-    padding-right: 0px;
-    padding-bottom: 0px;
-    padding-left: 0px;
-	    height: 68px;
+    padding:0px;
+	    height: 100%;
 	    line-height: 20px;
 	    border: none;
 	    overflow: auto;
@@ -419,14 +437,14 @@
     			
     			<div	class="chat-footer">
     				<div	class="qqFace">	</div>
-    				<div class="layui-unselect layim-chat-tool chat-tool"	 data-json="%7B%22name%22%3A%22tml%22%2C%22type%22%3A%22friend%22%2C%22avatar%22%3A%22%2Flayui%2Fimages%2Fimg%2Ftu2.png%22%2C%22id%22%3A1%7D">
+    				<div class="layui-unselect layim-chat-tool chat-tool" style="padding: 5px 0px"	 data-json="%7B%22name%22%3A%22tml%22%2C%22type%22%3A%22friend%22%2C%22avatar%22%3A%22%2Flayui%2Fimages%2Fimg%2Ftu2.png%22%2C%22id%22%3A1%7D">
     				
-                            <span  id="chat-biaoqing" class="layui-icon layim-tool-face" title="选择表情" ></span>
+                            <span  id="chat-biaoqing" class="layui-icon layim-tool-face" title="选择表情" style="color:#5FB666;font-weight:bold;" ></span>
                         
     				<label id="chat-tuxiang" title="发送图片" for="inputImage" class="btn-default-styles">
                             <input type="file" onchange="selectImg(this)" accept="image/jpg,image/jpeg,image/png"
                                    name="file" id="inputImage" class="hidden"	hidden="true"	width="24px" height="38px">
-                            <span class="layui-icon layim-tool-image" title="上传图片" >
+                            <span class="layui-icon layim-tool-image" title="上传图片"  style="color:#5FB666;font-weight:bold;" >
     				</span>
                         </label>
     				
@@ -818,10 +836,10 @@
 				error:function(){alert('eoo')},
 			});
 		}
-		 
+		new_news();
 	}
 	function	getMessage(json){
-		printUserMessage(json)
+		printUserMessage(json);
 	}
 	function	getImage(data){
 		var	path	=	data.content;
@@ -841,7 +859,15 @@
 	//enter事件
 	$(window).keydown(function(event){
 		if(event.keyCode ==13){
-			send();
+			if(event.ctrlKey){
+				document.getElementById("messages").value+= '\r\n';
+				//alert("ctrl+enter换行！")
+			}else{
+				send();
+				event.cancelBubble=true;
+				event.preventDefault();
+				event.stopPropagation();
+			}
 		}
 	});
 
@@ -856,6 +882,7 @@
 					+	'</div>'
 					+	'</li>';
 		$("#printMsg ul").append(mineMsg);
+		new_news();
 	}
 	
 	function	printUserMessage(json){
@@ -869,6 +896,7 @@
 					+	json.content
 					+	'</div></li>'
 		$("#printMsg ul").append(userMsg);
+		new_news();
 	}
 	//切换用户
 	function	switchUser(id){
@@ -905,6 +933,7 @@
 					+	'"></div>'
 					+	'</li>';
 		$("#printMsg ul").append(mineMsg);
+		new_news();
     }
     //查询待接入用户
     queryPendingAccess();
@@ -927,6 +956,14 @@
 			},
 			error:function(){},
 		});
+    }
+    //展示最近的消息
+    function new_news(){
+    	var main_hei=$("#printMsg").height();
+    	$(".chat-main").scrollTop(main_hei);
+    	//setInterval(function(){
+    		//new_news()
+    	//},200)
     }
 </script>
 </body>

@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Implementation-Title: customer
 Implementation-Version: 1.0.0.BUILD-SNAPSHOT
-Built-By: Dogness
+Built-By: HSDM07
 Implementation-Vendor-Id: com.dognessnetwork.customer
 Build-Jdk: 1.8.0_162
 Implementation-URL: http://platform.spring.io/platform/customer/
