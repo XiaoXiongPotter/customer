@@ -43,3 +43,4 @@ quit
 // Spring Roo 2.0.0.RC2 [rev 76d128f] log closed at 2018-08-07 20:35:52
 // Spring Roo 2.0.0.RC2 [rev 76d128f] log opened at 2018-08-08 15:33:23
 finder add --entity ~.domain.Messages --name findBySeatAndPetUserNameAndSendTimeBetween 
+// Spring Roo 2.0.0.RC2 [rev 76d128f] log closed at 2018-08-09 14:27:09
