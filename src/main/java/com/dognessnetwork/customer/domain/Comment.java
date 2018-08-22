@@ -59,11 +59,11 @@ public class Comment {
     @EntityFormat
     private	ChatRoom	chatRoom;
     /**
-     * 评论时间
+     * TODO 评论时间
      */
     private	Long	commentTime;
     /**
-     * 星级
+     * TODO 星级
      */
     private	Integer	star;
 }

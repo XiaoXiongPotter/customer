@@ -121,4 +121,23 @@ privileged aspect CommentService_Roo_Service {
      */
     public abstract long CommentService.countByChatRoom(ChatRoom chatRoom);
     
+    /**
+     * TODO Auto-generated method documentation
+     * 
+     * @param chatRoom
+     * @param star
+     * @param pageable
+     * @return Page
+     */
+    public abstract Page<Comment> CommentService.findByChatRoomAndStar(ChatRoom chatRoom, Integer star, Pageable pageable);
+    
+    /**
+     * TODO Auto-generated method documentation
+     * 
+     * @param chatRoom
+     * @param star
+     * @return Long
+     */
+    public abstract long CommentService.countByChatRoomAndStar(ChatRoom chatRoom, Integer star);
+    
 }

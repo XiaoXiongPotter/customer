@@ -1,4 +1,4 @@
-    function	getSockJS(){
+	function	getSockJS(){
     	var	SockJS;
     	$.ajax({
     		type: "GET",
@@ -70,6 +70,7 @@
     	return	res;
     }
     function	customerSendImg(images){
+    	console.log(seat,tousername,images)
     	var	res;
     	$.ajax({
 			type: "POST",
@@ -372,3 +373,42 @@
 		});
     	return	res;
 	}
+    function	get_login_user(){
+    	console.log("用户信息："+petUser)
+    	$.ajax({
+    		type: "POST",
+    		async:false,
+    		url: "/js/userChat/get_login_user",
+    		data:{
+    			username:petUser
+    		},
+    		dataType: "json",
+    		success: function(data) {
+    			
+    			console.log(data)
+    			//photoUrl=data.data.photoUrl;
+    			show_user(data.data);
+    			photoUrl	=	data.data.photoUrl;
+    		}
+    	})
+    }
+    
+    function	show_user(data){
+    	var	str	=	'<div class="layui-colla-item">'
+			+	'<h2 class="layui-colla-title" onclick="zhan('+data.id+')">'
+			+	'<i class="layui-icon layui-colla-icon"><img	width="20px;"	height="16px;"	src="'
+			+	data.photoUrl
+	    	+	'"/></i>'
+	    	+	'<span class="layui-badge layui-bg-cyan">'
+	    	+	data.nickname
+	    	+	'</span></h2><div class="layui-colla-content" id="'+data.id+'">'
+	    	+	'<p>'
+			+	'<br />"email:"'
+			+	data.email
+			+	'<br />"country:"'
+			+	data.country.name
+			+	'<br />注册时间：'
+			+	data.registerDate
+			+	'</p></div></div>'
+    	$("#user").append(str);
+    }

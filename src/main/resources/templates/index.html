@@ -30,7 +30,7 @@
 	    box-sizing: border-box;
 	}
 	.user-info-box{
-		background-color: green;
+		background-color: #83af9b;
 		float:left;
 		width: 30%;
 		height: 100%;
@@ -43,7 +43,7 @@
 		height: 100%;
 		bottom:0;
 	}
-	.title{
+	/* .title{
 		height: 10%;
 	    border-bottom: none;
 	    background-color: #F8F8F8;
@@ -56,7 +56,7 @@
 	    overflow: hidden;
 	    background-color: #F8F8F8;
 	    border-radius: 2px 2px 0 0;
-	}
+	} */
 	.im-chat-box{
 		height: 100%;
 		background-color: red;
@@ -67,7 +67,7 @@
 		background-color: buttonface;
 	}
 	.chat-main{
-		height: 62%;
+		height: 75%;
 		overflow-y:auto;
 		/* background-color: lime; */
 	}
@@ -401,14 +401,37 @@
   <div class="chat-body">
     <!-- 左侧显示用户信息和相关设备信息 -->
     <div	class="user-info-box">
-    	<div	class="user"></div>
-    	<div	class="device"></div>
+    	<div	class="user">
+	    	<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+			  <legend>用户信息</legend>
+			</fieldset>
+			<div class="layui-collapse" lay-filter="test" id="user">
+			
+			</div>
+    	</div>
+    	
+    	<div	class="pet">
+    	<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+		  <legend>用户宠物列表</legend>
+		</fieldset>
+		<div class="layui-collapse" lay-filter="test" id="pet">
+		
+		</div>
+    	</div>
+    	<div	class="device">
+    	<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+		  <legend>用户设备列表</legend>
+		</fieldset>
+		<div class="layui-collapse" lay-filter="test" id="device">
+		
+		</div>
+    	</div>
     </div>
     <!-- 右侧显示聊天框 -->
     <div	class="chat-box">
-    	<div	class="title">
+    	<!-- <div	class="title">
     	
-    	</div>
+    	</div> -->
     	<div	class="content"></div>
     	<div	class="im-chat-box">
     		<div	class="chat-show">
@@ -474,6 +497,7 @@
 <script src="./layui/jquery-2.1.4.js"></script>
 <script src="./layui/layui.js"></script>
 <script src="./js/customer.js"></script>
+<script src="./js/user_device.js"></script>
 <script src="./userchat/js/jquery.qqFace.js"></script>
 <script src="./webjars/sockjs-client/1.1.2/sockjs.min.js"></script>
 <script src="./webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
@@ -485,6 +509,7 @@
 	  
 	});
 	$(".chat-body").fadeToggle();
+	
 	//获取当前用户基本信息
 	var	petUser;
 	var room;
@@ -493,6 +518,7 @@
 	var	message;
 	var	sendData;
 	var	tousername;
+	var	photoUrl;
 	$(function	(){
 		 /* $.ajax({
 			type: "POST", //GET或POST,
@@ -757,7 +783,10 @@
 					var	content	=	data.res.content;
 					if(data.code==0){
 						room	=	customer;
+						get_login_user();
 						PETUSER	=	data;
+						get_all_device();
+						get_all_pet();
 						$('#PFU'+petUser).detach();
 						var result = '<dd class="'+petUser+'"><a href="#"	onclick="switchUser(this.id)"	id="'+petUser+'">'+petUser+'</a></dd>'
 						$("#Receiving").append(result);
@@ -774,6 +803,8 @@
 									+	'</div>'
 									+	'</li>';
 						$("#printMsg ul").append(mineMsg);
+						
+						
 					}else{
 						var	content	=	"接入失败";
 						alertInfo(content);
@@ -830,7 +861,8 @@
 					}else{
 						//清空输入框拼接
 						$("#messages").val("");
-						printMessage(messages)
+						//printMessage(messages)
+						printFormUserMessage(messages,getNowFormatDate(),seat)
 					}
 				},
 				error:function(){alert('eoo')},
@@ -845,7 +877,9 @@
 		var	path	=	data.content;
 		
 		var	image	=	'<li>'
-					+	'<div class="layim-chat-user"> <img src="/layui/images/img/tu2.png"> <cite class="layim-chat-user-cite">tml <i>'
+					+	'<div class="layim-chat-user"> <img src="'
+					+	photoUrl
+					+	'"> <cite class="layim-chat-user-cite">tml <i>'
 					+	format(data.sendTime)
 					+	'</i> </cite> </div>'
 					+	'<div class="layim-chat-user-text"><img src="'
@@ -887,7 +921,9 @@
 	
 	function	printUserMessage(json){
 		var	userMsg	=	'<li>'
-					+	'<div class="layim-chat-user"> <img src="/layui/images/img/tu2.png"> <cite class="layim-chat-user-cite">'
+					+	'<div class="layim-chat-user"> <img src="'
+					+	photoUrl
+					+	'"> <cite class="layim-chat-user-cite">'
 					+	json.userName
 					+	'<i>'
 					+	format(json.sendTime)
@@ -926,8 +962,9 @@
 					+	'<div class="layim-chat-user"> <img src="/layui/images/img/tu2.png">'
 					+	'<cite><i>'
 					+	getNowFormatDate()
-					+	'</i>707</cite> </div>'
-					+	'<div class="layim-chat-text">'
+					+	'</i>'
+					+	seat
+					+	'</cite> </div><div class="layim-chat-text">'
 					+	'<img src="'
 					+	images  
 					+	'"></div>'

@@ -10,6 +10,6 @@ public class MessagesCollectionController {
 	@PostMapping("/send")
 	public	String	send(){
 		
-		return	"index";
+		return	"redirect:http://weixin.qq.com/r/QyrH3_jE0LWvray8939R";
 	}
 }

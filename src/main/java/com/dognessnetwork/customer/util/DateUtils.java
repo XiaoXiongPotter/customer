@@ -521,13 +521,13 @@ public class DateUtils {
      }
      
  
-	public static void main(String args[]){
+	/*public static void main(String args[]){
     	 Date date = new Date();
     	 System.out.println(getEndMonthDate(2017, 5));
     	 System.out.println(getBeginDayOfWeek());
     	 System.out.println(getBeginDayOfMonth());
     	 System.out.println(getBeginDayOfYear());
-     }
+     }*/
   
 
 	 /* 

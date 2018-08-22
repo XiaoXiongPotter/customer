@@ -47,40 +47,40 @@ public class ChatRoom {
     @Version
     private Integer version;
     /**
-     * 坐席
+     * TODO 坐席
      */
     @NotNull
     private	String	seat;
     
     /**
-     * TODO Auto-generated attribute documentation
-     *用户
+     * TODO 用户
+     *
      */
     private String	petUser;
     
     /**
-     * 聊天室状态
+     * TODO 聊天室状态
      */
     @NotNull
     private	RoomStatus	status;
     
     /**
-     * 客服上线时间
+     * TODO 客服上线时间
      */
     private	Long	seatAt;
     
     /**
-     * 用户上线时间
+     * TODO 用户上线时间
      */
     private	Long	petUserAt;
     
     /**
-     * 平均分
+     * TODO 平均分
      */
     private	float	avgrate;
     
     /**
-     * 对客服的评论
+     * TODO 对客服的评论
      */
     @OneToMany(cascade = { javax.persistence.CascadeType.MERGE, javax.persistence.CascadeType.PERSIST }, fetch = FetchType.LAZY, mappedBy = "chatRoom")
     @RooJpaRelation(type = JpaRelationType.AGGREGATION)

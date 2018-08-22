@@ -36,9 +36,9 @@ public class StringToNumber {
 	    }  
 	    return sbu.toString().replace(",", "");  
 	}  
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		Console.log("123123");
 		Console.log(HttpUtil.get("http://192.168.0.197:8087/users/hello"));
 		//Console.log(letterToNumber("CSD707kfCSD"));;
-	}
+	}*/
 }

@@ -54,20 +54,20 @@ public class Messages {
     private String postMessages;
 
     /**
-     * TODO Auto-generated attribute documentation
-     *发�?�消息的当前时间�?
+     * TODO 发送消息的当前时间戳
+     *
      */
     private Long sendTime;
 
     /**
-     * TODO Auto-generated attribute documentation
-     *发�?��??
+     * TODO 消息发送者
+     *
      */
     private String formUser;
 
     /**
-     * TODO Auto-generated attribute documentation
-     *接收�?
+     * TODO 消息接收者
+     *
      */
     private String toUser;
 
@@ -79,23 +79,23 @@ public class Messages {
     private MessageType messageType;
 
     /**
-     * 消息送达状�??
+     * TODO 消息送达状态
      */
     private MessageStatus messageStatus;
 
     /**
-     * 接入时间
+     * TODO 接入时间
      */
     private Long startTime;
 
     /**
-     * TODO Auto-generated attribute documentation
+     * TODO 用户名
      *
      */
     private String petUserName;
 
     /**
-     * TODO Auto-generated attribute documentation
+     * TODO 客服
      *
      */
     private String seat;

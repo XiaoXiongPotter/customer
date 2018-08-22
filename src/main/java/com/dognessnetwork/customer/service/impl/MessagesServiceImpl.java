@@ -55,6 +55,7 @@ public class MessagesServiceImpl implements MessagesService {
 		/**
 		 * 用户请求人工服务
 		 */
+        @Transactional
 		public    String  requestCustomerService(String   formUser,String    toUser,String    postMessages){
 		    String    petUserName   =   formUser.substring(3);
 		    Long  time    =   System.currentTimeMillis();

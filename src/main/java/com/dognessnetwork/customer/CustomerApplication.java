@@ -11,7 +11,8 @@ import org.springframework.boot.web.support.SpringBootServletInitializer;
 
 @SpringBootApplication
 @ServletComponentScan
-public class CustomerApplication extends SpringBootServletInitializer implements EmbeddedServletContainerCustomizer{
+
+public class CustomerApplication extends SpringBootServletInitializer /*implements EmbeddedServletContainerCustomizer*/{
 
 	public static void main(String[] args) {
 		SpringApplication.run(CustomerApplication.class, args);
@@ -23,9 +24,9 @@ public class CustomerApplication extends SpringBootServletInitializer implements
 	       return builder.sources(CustomerApplication.class);
 	}
 
-	@Override
+	/*@Override
 	public void customize(ConfigurableEmbeddedServletContainer arg0) {
 		// TODO Auto-generated method stub
-		arg0.setPort(8085);
-	}
+		arg0.setPort(80);
+	}*/
 }

@@ -95,17 +95,6 @@ privileged aspect CommentServiceImpl_Roo_Service_Impl {
     /**
      * TODO Auto-generated method documentation
      * 
-     * @param entity
-     * @return Comment
-     */
-    @Transactional
-    public Comment CommentServiceImpl.save(Comment entity) {
-        return getCommentRepository().save(entity);
-    }
-    
-    /**
-     * TODO Auto-generated method documentation
-     * 
      * @param id
      * @return Comment
      */
@@ -194,6 +183,29 @@ privileged aspect CommentServiceImpl_Roo_Service_Impl {
      */
     public long CommentServiceImpl.countByChatRoom(ChatRoom chatRoom) {
         return getCommentRepository().countByChatRoom(chatRoom);
+    }
+    
+    /**
+     * TODO Auto-generated method documentation
+     * 
+     * @param chatRoom
+     * @param star
+     * @param pageable
+     * @return Page
+     */
+    public Page<Comment> CommentServiceImpl.findByChatRoomAndStar(ChatRoom chatRoom, Integer star, Pageable pageable) {
+        return getCommentRepository().findByChatRoomAndStar(chatRoom, star, pageable);
+    }
+    
+    /**
+     * TODO Auto-generated method documentation
+     * 
+     * @param chatRoom
+     * @param star
+     * @return Long
+     */
+    public long CommentServiceImpl.countByChatRoomAndStar(ChatRoom chatRoom, Integer star) {
+        return getCommentRepository().countByChatRoomAndStar(chatRoom, star);
     }
     
     /**

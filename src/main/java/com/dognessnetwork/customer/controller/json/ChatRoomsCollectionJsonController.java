@@ -51,6 +51,26 @@ public class ChatRoomsCollectionJsonController {
 	MessagesService	messagesService;
 	@Autowired
 	WebSocketClient    webSocketClient;
+	
+	/**
+	 * /js/chatrooms/get_talking
+	 *用户聊天框刷新获取正在和用户聊天的客服 
+	 * @param petUserName
+	 * @return
+	 */
+	@ResponseBody
+    @PostMapping(value="/get_talking",produces = "text/plain;charset=UTF-8")
+	public String  get_talking(String  petUserName){
+	    ChatRoom   chatRoom    =   chatroomService.findByPetUser(petUserName);
+	    if(chatRoom==null){
+	        return null;
+	    }
+	    else   if(chatRoom.getPetUser().equals(petUserName)){
+	        return chatRoom.getSeat();
+	    }
+	    return null;
+	}
+	
 	/**
 	 * /js/chatrooms/get_petUser_is_accessing
 	 * @param req
@@ -272,5 +292,23 @@ public class ChatRoomsCollectionJsonController {
             res.put("data", list);
         }
         return res;
+    }
+    
+    /**
+     * 获取客服正在接待的用户
+     * @param seat
+     * @return
+     */
+    @ResponseBody
+    @PostMapping(value="/receiving_user",produces = "text/plain;charset=UTF-8")
+    public String  receiving_user(String  seat){
+        ChatRoom   chatRoom    =   chatroomService.findBySeat(seat);
+        if(chatRoom==null){
+            return null;
+        }
+        else   if(chatRoom.getSeat().equals(seat)){
+            return chatRoom.getPetUser();
+        }
+        return null;
     }
 }

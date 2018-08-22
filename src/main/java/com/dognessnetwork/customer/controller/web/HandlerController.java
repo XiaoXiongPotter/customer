@@ -34,6 +34,7 @@ import com.dognessnetwork.customer.util.SecurityUtils;
 //import com.dognessnetwork.customer.service.api.RedisService;
 import com.dognessnetwork.customer.util.StringToNumber;
 
+import cn.hutool.core.codec.Base64;
 import cn.hutool.core.lang.Console;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
@@ -162,21 +163,36 @@ public class HandlerController {
      * @return
      */
     @RequestMapping("/requestCustomerService")
-    public String message(String	username) {
+    public String message(String    username,
+            String token,
+            HttpServletRequest    request,
+            String  platForm,
+            String  area) {
+        
     	if(username==null)username="hello";
-    	String	key	=	username;
+    	
+    	//redisService.setStr(username, token);
+        
+        JSONObject  mine    =   new JSONObject();
+        mine.put("username", username);
+        mine.put("token", token);
+        mine.put("platForm", platForm);
+        mine.put("area", area);
+        
+        redisService.setStr(username, mine+"");
+        //request.getSession().setAttribute("username", username);
+        //redisService.setStr("user", val);
+		Console.log("登录跳转");
 		
-		JSONObject	mine	=	new	JSONObject();
-		mine.put("username", username);//我的昵称
-		mine.put("id", StringToNumber.letterToNumber(username));//我的ID
-		mine.put("status", "online");//在线状态 online：在线、hide：隐身
-		mine.put("sign", "PFU");//我的签名
-		mine.put("avatar", "/layui/images/img/tu2.png");//我的头像
-		//redisService.setStr(key, mine+"");
-		session.setAttribute("user", mine);
-		Console.log("登录");
-        return /*"customer_service"*/"userchat";
+        return "redirect:userchat?"+Base64.encode("room="+username);
     }
+    
+    @RequestMapping(value = "/userchat", method = RequestMethod.GET)
+    public String userchat() {
+        
+        return "userchat";
+    }
+    
     @RequestMapping(value = "/chatRoom", method = RequestMethod.GET)
     public String chatRoom(String	username) {
     	

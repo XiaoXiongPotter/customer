@@ -8,6 +8,8 @@ import com.dognessnetwork.customer.domain.Comment;
 import com.dognessnetwork.customer.repository.CommentRepository;
 import com.dognessnetwork.customer.repository.CommentRepositoryCustom;
 import io.springlets.data.jpa.repository.DetachableJpaRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 privileged aspect CommentRepository_Roo_Jpa_Repository {
@@ -25,5 +27,24 @@ privileged aspect CommentRepository_Roo_Jpa_Repository {
      * @return Long
      */
     public abstract long CommentRepository.countByChatRoom(ChatRoom chatRoom);
+    
+    /**
+     * TODO Auto-generated method documentation
+     * 
+     * @param chatRoom
+     * @param star
+     * @param pageable
+     * @return Page
+     */
+    public abstract Page<Comment> CommentRepository.findByChatRoomAndStar(ChatRoom chatRoom, Integer star, Pageable pageable);
+    
+    /**
+     * TODO Auto-generated method documentation
+     * 
+     * @param chatRoom
+     * @param star
+     * @return Long
+     */
+    public abstract long CommentRepository.countByChatRoomAndStar(ChatRoom chatRoom, Integer star);
     
 }

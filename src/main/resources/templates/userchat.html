@@ -4,14 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="weburl" content="http://www.jq22.com/">
 <title>宠联网人工客服</title>
-  <style type="text/css">
-
-  </style>
 <link rel="stylesheet" type="text/css" href="./layui/css/layui.css">
+
 <link rel="stylesheet" type="text/css" href="./userchat/font_Icon/iconfont.css">
 <link rel="stylesheet" type="text/css" href="./userchat/css/chat.css">
+<link rel="stylesheet" type="text/css" href="./layui/css/modules/layer/default/layer.css">
 <style>
 	.chatBox-send{
 		width: 100%;
@@ -43,25 +41,19 @@
 
 
 <div class="chatContainer">
-    <div class="chatBtn">
-        <i class="iconfont icon-xiaoxi1"></i>
-    </div>
-    <div class="chat-message-num">10</div>
     <div class="chatBox" ref="chatBox">
         <div class="chatBox-head">
-            <!-- <div class="chatBox-head-one">
-                Conversations
-                <div class="chat-close" style="margin: 10px 10px 0 0;font-size: 14px">关闭</div>
-            </div> -->
             <div class="chatBox-head-two">
-                <div class="chat-return"><i class="layui-icon layui-icon-return"></i></div>
-                <div class="chat-people">
+                <div class="chat-return"	id="back">
+	                <i class="layui-icon layui-icon-return"></i>
+                </div>
+                <div class="chat-people"	id="chatPeople">
                     <div class="ChatInfoHead">
                         <img src="./layui/images/img/tu2.png" alt="头像">
                     </div>
-                    <div class="ChatInfoName">宠联网小朵</div>
+                    <div class="ChatInfoName">机器小朵</div>
                 </div>
-                <div class="chat-kefu"><i class="layui-icon layui-icon-chat"></i><!-- 转人工 --></div> 
+                <div class="chat-kefu"><!-- <i class="layui-icon layui-icon-chat"></i> --> 转人工</div> 
             </div>
         </div>
             <div class="chatBox-kuang" ref="chatBoxkuang">
@@ -104,503 +96,353 @@
 <p>
 </div>
 </div>
+
+
+<div	id="avgrate" style="margin-bottom: 1px;margin-left: 20px;">
+			<fieldset	id="username" class="layui-elem-field layui-field-title" style="margin-bottom: 1px;">
+			  
+			</fieldset>
+			<div id="test1"><img alt="" src=""	id="logo"></div>
+			<div id="test2"></div>
+			<div>
+			    <div >
+			      <textarea placeholder="请输入评价" id="content"></textarea>
+			    </div>
+			</div>
+			<div >
+			    <div >
+			      <button class="layui-btn"	id="tjpj">提交</button>
+			    </div>
+			</div>
+</div>
+
 <script src="./userchat/js/jquery.min.js"></script>
+<script src="./js/base64.js"></script>
 <script src="./layui/layui.js"></script>
-<script src="./js/message.js"></script>
+<script src="./userchat/layer/layer.js"></script>
+<script src="./userchat/js/message.js"></script>
 <script src="./userchat/js/jquery.qqFace.js"></script>
 <script src="/webjars/sockjs-client/1.1.2/sockjs.min.js"></script>
 <script src="/webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
 <script>
-    var room;
-    var	seat;
-    var	kefuList	=	[];
-    var face;
-    
-	$(function(){
+	var room = null;
+	var seat = null;
+	var kefuList = [];
+	var face = null;
+	var photoUrl = null;
+	$(function() {
 		$('#chat-biaoqing').qqFace({
-			id : 'facebox', 
-			assign:'saytext', 
-			path:'./userchat/img/arclist/'	//表情存放的路径"src/main/resources/static"
+			id: 'facebox',
+			assign: 'saytext',
+			path: './userchat/img/arclist/' /* 表情存放的路径 */
 		});
 	});
-	function	showQQFace(){
+	
+	function showQQFace() {
 		face = $("#saytext").val();
 		$(".div-textarea").html(replace_em(face));
-	}
-	//查看结果
-	function replace_em(str){
-		str = str.replace(/\</g,'&lt;');
-		str = str.replace(/\>/g,'&gt;');
-		str = str.replace(/\n/g,'<br/>');
-		str = str.replace(/\[em_([0-9]*)\]/g,'<img	style="width: 24px;height: 24px;" src="./userchat/img/arclist/$1.gif" border="0" />');
+	} /* 查看结果 */
+	function replace_em(str) {
+		str = str.replace(/\</g, '&lt;');
+		str = str.replace(/\>/g, '&gt;');
+		str = str.replace(/\n/g, '<br/>');
+		str = str.replace(/\[em_([0-9]*)\]/g, '<img	style="width: 24px;height: 24px;" src="./userchat/img/arclist/$1.gif" border="0" />');
 		return str;
-	}
-    $.ajax({
-    	   type: "GET", //GET或POST,
-    	   async:false, //默认设置为true，所有请求均为异步请求。
-    	   url: "/js/petUser/get_login_petUser",
-    	   dataType: "json", //xml、html、script、jsonp、text
-    	   success: function(data) {
-    		   //平台普通用户>>>>>PFU
-		      room	=	data.sign+data.username;
-		      //myInfo	=	data;
-		      console.log("用户信息：>>>>");
-		      console.log(data);
-		      console.log("<<<<<<room赋值");
-		      console.log(room);
-		    	//查询今天的消息
-			    refresh();
-			    console.log("查询今天的消息");
-		   }
-    })
-    var websocket;
-	if ('WebSocket' in window) {
-		websocket = new WebSocket(getWeSocket()+"?uid="+room);
-	} else if ('MozWebSocket' in window) {
-		websocket = new MozWebSocket(getWeSocket()+room);
-	} else {
-		websocket = new SockJS(getSockJS()+room);
-	}
-	websocket.onmessage = function(event) {
-		var data=JSON.parse(event.data);
-		console.log(data)
-		if(data.header.code==6001){
-	    	console.log("线上客服");
-	    	console.log(data.data);
-	    	kefuList	=	data.data;
-	    	console.log(kefuList);
+	} /* 判断用户是哪个平台的 */
+	$.ajax({
+		type: "POST",
+		async: false,
+		url: "/js/userChat/get_user",
+		data: GetRequest(),
+		dataType: "json",
+		success: function(data) { /* {username:,token:,platForm:,area:} */
+			room = 'PFU' + data.username;
+			get_login_user(data.token); /* 不同平台显示的不同 */
+			forPlat(data.platForm); /* 更新当天的聊天信息 */
+			refresh(); /* 用户聊天页刷新时获取正在和用户聊天的客服坐席 */
+			seat = 'CSD' + get_talking(data.username); /* 聊天头更新为聊天的对象 */
+			if(seat.substring(3) == get_talking(data.username)) {
+				$(".ChatInfoName").text(seat.substring(3));
+			}
 		}
-		else if(data.header.code==6003){
-	    	console.log("下线用户");
-	    	console.log(data.data);
-		}else{
-			if(data.data.msgType=='Picture'){
+	}); /* 与聊天服务器建立连接 */
+	var websocket;
+	if('WebSocket' in window) {
+		websocket = new WebSocket(getWeSocket() + "?uid=" + room);
+	} else if('MozWebSocket' in window) {
+		websocket = new MozWebSocket(getWeSocket() + room);
+	} else {
+		websocket = new SockJS(getSockJS() + room);
+	} /* 当收到消息后 */
+	websocket.onmessage = function(event) {
+		var data = JSON.parse(event.data);
+		if(data.header.code == 6001) { /* console.log("线上客服"); */
+			kefuList = data.data;
+		} else if(data.header.code == 6003) { /* console.log("下线用户"); */ } else {
+			if(data.data.msgType == 'Picture') {
 				printCustomerImage(data.data)
 			}
-			if(data.data.msgType=='Text'){
+			if(data.data.msgType == 'Text') {
 				getMessage(data.data)
 			}
 		}
-	}
-	/* var	socketService	=	getSockJS();
-	//上线
-	var socket = new SockJS(socketService+"/socketjs?id="+room);
-    //创建监听客户端
-    var stompClient = Stomp.over(new SockJS(socketService));
-    //接收消息
-    stompClient.connect( {},function (frame) {
-        stompClient.subscribe( '/topic/customer/'+ room,function (data) {
-            var json = JSON.parse(data.body);
-            console.log("接收到的消息：")
-        	console.log(json)
-        	getMessage(json)
-        });
-    });
-    //监听socket服务器发送的消息
-    wesocket = new WebSocket(getWeSocket()+"?id="+room);
-    wesocket.onmessage = function (msg) {
-        console.log("获取到的在线客服列表");
-        console.log(msg.data);
-        var json = JSON.parse(msg.data);
-        kefuList	=	json;
-		//获取到的在线客服列表
-        if(msg.data.length<0) {
-            //如果客服不在线或在节假日便接入机器人客服
-	    } else {
-	        //提醒正在接入
-	    }
-	}; */
-        
-	function	getMessage(json) {
-    	seat	=	json.fromUser;
-    	console.log(json)
-    	//收到消息后更新消息为送达
-    	$.ajax({
-        	type: "POST", //GET或POST,
-        	async:false, //默认设置为true，所有请求均为异步请求。
-        	url: "/js/messageses/updateStatus",
-        	data: {
-        		sendTime:json.sendTime
-        		},
-        	dataType: "json", //xml、html、script、jsonp、text
-        	success: function(data) {
-	        	console.log("消息状态更新：");
-	        	console.log(data);
-        		//根据消息状态进行拼接
-        		if(data.res=="success"){
-        			printKefuMessage(json);
-        		}
-        	},
-        	error:function(){alert('eoo')},
-    	});
-	}
-
-	function	send() {
-		console.log("发送数据：")
-		var content = $(".div-textarea").html().replace(/[\n\r]/g, '<br>')
-		//var	content	=	$("#chat-fasong").val();
+	};
+	
+	function getMessage(json) { /* 赋值坐席 */
+		seat = json.fromUser; /* 改变聊天头 */
+		$(".ChatInfoName").text(seat.substring(3)); /* 收到消息后更新消息为送达 */
+		$.ajax({
+			type: "POST",
+			async: false,
+			url: "/js/messageses/updateStatus",
+			data: {
+				sendTime: json.sendTime
+			},
+			dataType: "json",
+			success: function(data) { /* console.log("消息状态更新："); 根据消息状态进行拼接 */
+				if(data.res == "success") {
+					printKefuMessage(json);
+				}
+			},
+			error: function() {
+				console.log('getMessage')
+			},
+		});
+	} /* 发送数据 */
+	function send() {
+		var content = $(".div-textarea").html().replace(/[\n\r]/g, '<br>');
 		console.log(content);
-		$("#saytext").val("");
-		//接入机器人
-		if(seat==null){
+		$("#saytext").val(""); /* 如果坐席为空则接入机器人 */
+		if(seat == null || seat == 'CSDundefined') {
 			printUserMessage(content);
 			printUserMessageToRobot(content);
-		}else{
-			var	res	=	sendMsg(content);
-			if(res.res==0){
+		} else {
+			var res = sendMsg(content);
+			if(res.res == 0) {
 				printUserMessage(content);
-			}
-			//客服掉线了所以向机器人发送了一条消息
-			if(res.res==2){
-				seat=null;
+			} /* 客服掉线了所以向机器人发送了一条消息 */
+			if(res.res == 2) {
+				seat = null;
 				printUserMessage(content);
-				console.log("<<<<<<<<")
-				var	array	=	JSON.parse(res.data)
+				var array = JSON.parse(res.data);
 				printRobotMessage(array[0].values.text);
 			}
 		}
-
-	}
-	/* 调用机器人 */
-	function	printUserMessageToRobot(content) {
+	} /* 调用机器人 */
+	function printUserMessageToRobot(content) {
 		$.ajax({
-			type: "POST", //GET或POST,
-			async:false, //默认设置为true，所有请求均为异步请求。
+			type: "POST",
+			async: false,
 			url: "/js/robot/get_message_robot",
 			data: {
 				content: content
 			},
-			dataType: "json", //xml、html、script、jsonp、text
+			dataType: "json",
 			success: function(data) {
-				console.log(data)
-				for(var	i=0;i<data.length;i++){
+				//console.log(data);
+				for(var i = 0; i < data.length; i++) {
 					printRobotMessage(data[i].values.text);
 				}
-				
 			},
-			error:function(){alert('eoo')},
+			error: function() {
+				console.log('printUserMessageToRobot')
+			},
 		});
+	} /* 输出机器人的语句 */
+	function printRobotMessage(str) {
+		var Robotmessage = '<div class="clearfloat">' + '<div class="author-name">' + '<small class="chat-date">' + getNowFormatDate() + '</small>' + '</div>' + '<div class="left">' + '<div class="chat-avatars"><img src="./layui/images/img/tu2.png" alt="头像"></div>' + '<div class="chat-message">' + str + '</div>' + '</div>' + '</div>';
+		$(".chatBox-content-demo").append(Robotmessage);
+		refresh_bottom();
+	} /* 输出用户的语句 */
+	function printUserMessage(str) {
+		var textContent = '<div class="clearfloat">' + '<div class="author-name">' + '<small class="chat-date">' + getNowFormatDate() + '</small>' + '</div>' + '<div class="right">' + '<div class="chat-message">' + str + '</div>' + '<div class="chat-avatars"><img src="' + photoUrl + '" alt="头像"></div>' + '</div>' + '</div>';
+		$(".chatBox-content-demo").append(textContent);
+		refresh_bottom();
 	}
-	/* 输出机器人的语句 */
-	function	printRobotMessage(str) {
-		var	Robotmessage	=	'<div class="clearfloat">'
-						+	'<div class="author-name">'
-						+	'<small class="chat-date">'
-						+	getNowFormatDate()
-						+	'</small>'
-						+	'</div>'
-	                    +	'<div class="left">'
-	                    +	'<div class="chat-avatars"><img src="./layui/images/img/tu2.png" alt="头像"></div>'
-	                    +	'<div class="chat-message">'
-	                    +	str
-	                    +	'</div>'
-	                    +	'</div>'
-	                    +	'</div>'
-		$(".chatBox-content-demo").append(Robotmessage)
-		//发送后清空输入框
-		$(".div-textarea").html("");
-        //聊天框默认最底部
-        $(document).ready(function () {
-        	$("#chatBox-content-demo").scrollTop($("#chatBox-content-demo")[0].scrollHeight);
-        });
+	
+	function printKefuMessage(json) {
+		seat = json.fromUser;
+		var kefumessage = '<div class="clearfloat">' + '<div class="author-name">' + '<small class="chat-date">' + getNowFormatDate() + '</small>' + '</div>' + '<div class="left">' + '<div class="chat-avatars"><img src="./layui/images/img/tu2.png" alt="头像"></div>' + '<div class="chat-message">' + json.content + '</div>' + '</div>' + '</div>';
+		$(".chatBox-content-demo").append(kefumessage);
+		refresh_bottom();
 	}
-	/* 输出用户的语句 */
-	function	printUserMessage(str) {
-		var	textContent	=	'<div class="clearfloat">'
-						+	'<div class="author-name">'
-						+	'<small class="chat-date">'
-						+	getNowFormatDate()
-						+	'</small>'
-						+	'</div>'
-						+	'<div class="right">'
-		            	+	'<div class="chat-message">'
-		            	+	str
-		            	+	'</div>'
-		            	+	'<div class="chat-avatars"><img src="./userchat/img/icon02.png" alt="头像"></div>'
-		            	+	'</div>'
-		            	+	'</div>'
-        $(".chatBox-content-demo").append(textContent);
-        //发送后清空输入框
-        $(".div-textarea").html("");
-        //聊天框默认最底部
-        $(document).ready(function () {
-        	$("#chatBox-content-demo").scrollTop($("#chatBox-content-demo")[0].scrollHeight);
-        });
-	}
-	function	printKefuMessage(json) {
-		seat=json.fromUser;
-		var	kefumessage	=	'<div class="clearfloat">'
-						+	'<div class="author-name">'
-						+	'<small class="chat-date">'
-						+	getNowFormatDate()
-						+	'</small>'
-						+	'</div>'
-			            +	'<div class="left">'
-			            +	'<div class="chat-avatars"><img src="./layui/images/img/tu2.png" alt="头像"></div>'
-			            +	'<div class="chat-message">'
-			            +	json.content
-			            +	'</div>'
-			            +	'</div>'
-			            +	'</div>'
-		$(".chatBox-content-demo").append(kefumessage)
-		//发送后清空输入框
-		$(".div-textarea").html("");
-		//聊天框默认最底部
-		$(document).ready(function () {
-		$("#chatBox-content-demo").scrollTop($("#chatBox-content-demo")[0].scrollHeight);
-		});
-	}
-    screenFuc();
-    function screenFuc() {
-        var topHeight = $(".chatBox-head").innerHeight();//聊天头部高度
-        //屏幕小于768px时候,布局change
-        var winWidth = $(window).innerWidth();
-        if (winWidth <= 768) {
-            var totalHeight = $(window).height(); //页面整体高度
-            //$(".chatBox-info").css("height", totalHeight - topHeight);
-            //var infoHeight = $(".chatBox-info").innerHeight();//聊天头部以下高度
-            //中间内容高度
-            $(".chatBox-content").css("height",totalHeight - topHeight-46);
-            $(".chatBox-content-demo").css("height", totalHeight - topHeight-46);
-
-            //$(".chatBox-list").css("height", totalHeight - topHeight);
-            $(".chatBox-kuang").css("height", totalHeight - topHeight);
-            $(".div-textarea").css("width", winWidth - 106);
-        } else {
-            //$(".chatBox-info").css("height", 495);
-            $(".chatBox-content").css("height", 448);
-            $(".chatBox-content-demo").css("height", 448);
-            //$(".chatBox-list").css("height", 495);
-            $(".chatBox-kuang").css("height", 495);
-            $(".div-textarea").css("width", 260);
-        }
-    }
-    (window.onresize = function () {
-        screenFuc();
-    })();
-
-
-    //返回
-    $(".chatBtn").click(function () {
-        $(".chatBox").toggle(10);
-    })
-    /* 请求客服 */
-    $(".chat-kefu").click(function () {
-        //如果有客服在线
-        var	len	=	kefuList.length;
-        if(len>0){
-        	for(var	i=0;i<kefuList.length;i++){
-        		var	res;
-            	$.ajax({
-        			type: "POST", //GET或POST,
-        			async:false, //默认设置为true，所有请求均为异步请求。
-        			url: "/js/messageses/sendMsg",
-        			data: {
-        				formUser: room, 
-        				toUser : kefuList[i],
-        				postMessages : '人工'
-        			},
-        			dataType: "json", //xml、html、script、jsonp、text
-        			success: function(data) {
-        				console.log("人工请求")
-        				console.log(data)
-        				if(data.res==0){
-        					alertPrompt("已为您转接人工客服")
-        				}
-        				if(data.res==1){
-        					alertPrompt("进入待接入区请稍后")
-        				}
-        				res	= data;
-        			},
-        			error:function(){alert('eoo')},
-        		});
-        	}
-        }else{
-        	alertPrompt("人工客服未上线请稍后再试！")
-        }
-    	
-    })
-
-    //返回列表
-    $(".chat-return").click(function () {
-        $(".chatBox-head-one").toggle(1);
-        $(".chatBox-head-two").toggle(1);
-        //$(".chatBox-list").fadeToggle(1);
-        $(".chatBox-kuang").fadeToggle(1);
-    });
-
-    //发送信息
-    $("#chat-fasong").click(function () {
-    	send()
-    });
-  //enter事件 
-  	//CTRL+enter换行
-	$(function(){
-		$("#text_content").focus(function(){
+	screenFuc();
+	(window.onresize = function() {
+		screenFuc();
+	})(); /* 返回 */
+	$(".chatBtn").click(function() {
+		$(".chatBox").toggle(10);
+	}); /* 请求客服 */
+	$(".chat-kefu").click(function() { /* 如果有客服在线 */
+		var len = kefuList.length;
+		if(len > 0) {
+			for(var i = 0; i < kefuList.length; i++) {
+				var res;
+				$.ajax({
+					type: "POST",
+					async: false,
+					url: "/js/messageses/sendMsg",
+					data: {
+						formUser: room,
+						toUser: kefuList[i],
+						postMessages: '人工'
+					},
+					dataType: "json",
+					success: function(data) {
+						console.log("人工请求");
+						console.log(data);
+						if(data.res == 0) {
+							alertPrompt("已为您转接人工客服")
+						}
+						if(data.res == 1) {
+							alertPrompt("进入待接入区请稍后")
+						}
+						res = data;
+					},
+					error: function() {
+						alert('eoo')
+					},
+				});
+			}
+		} else {
+			alertPrompt("人工客服未上线请稍后再试！")
+		}
+	}); /* 发送信息 */
+	$("#chat-fasong").click(function() {
+		send();
+	}); /* enter事件CTRL+enter换行 */
+	$(function() {
+		$("#text_content").focus(function() {
 			$("#text_content").removeClass("flag");
 		});
-	    /* $("#myEditor").blur(function(){
-	    	$("#myEditor").addClass("flag");
-	    }); */
 	});
-  		function add(){ 
-  			insertHTML("<br/><br/>"); 
-  		}
-  		//再加入一个全屏事件  
-  		$(window).click(function(e){  
-		if (window.getSelection){  
-			var getevent=e.srcElement?e.srcElement:e.target;//不要告诉我不知道这句的意思  
-			//console.log(getevent.id,getevent.tagName);
-			if(getevent.id!=null && getevent.id=="cmdInsert"||getevent.id=="text_content"){  
-				//alert(0);
-				//代表 点了插入html的按钮  
-				//则不执行getFocus方法  
-			}else  $("#text_content").addClass("flag");//除非点了那个插入html的按钮 其他时候必须要执行getFocus来更新最后失去焦点的div  
+	
+	function add() {
+		insertHTML("<br/><br/>");
+	} /* 再加入一个全屏事件 */
+	$(window).click(function(e) {
+		if(window.getSelection) {
+			var getevent = e.srcElement ? e.srcElement : e.target; /* 不要告诉我不知道这句的意思   */
+			if(getevent.id != null && getevent.id == "cmdInsert" || getevent.id == "text_content") {} else $("#text_content").addClass("flag"); /* 除非点了那个插入html的按钮 其他时候必须要执行getFocus来更新最后失去焦点的div   */
 		}
-	}) 
-
-  		function insertHTML(html){  
-		var dthis=$("#text_content")[0];//要插入内容的某个div,在标准浏览器中 无需这句话  
-		//dthis.focus();
-		var sel, range; 
-		console.log($(dthis).hasClass("flag"));
-		if($(dthis).hasClass("flag")){
-			$(dthis).html(dthis.innerHTML+html);
+	});
+	
+	function insertHTML(html) {
+		var dthis = $("#text_content")[0];
+		var sel, range; /* console.log($(dthis).hasClass("flag")); */
+		if($(dthis).hasClass("flag")) {
+			$(dthis).html(dthis.innerHTML + html);
 			return;
 		}
-		if (window.getSelection){  
-			// IE9 and non-IE  
-			sel = window.getSelection();  
-			if (sel.getRangeAt && sel.rangeCount) {  
-				range = sel.getRangeAt(0);  
-				range.deleteContents();  
-				var el = document.createElement('div');  
-				el.innerHTML = html;  
-				var frag = document.createDocumentFragment(), node, lastNode;  
-				while ( (node = el.firstChild) ) {  
-					lastNode = frag.appendChild(node);  
-				}  
-				range.insertNode(frag);  
-				if (lastNode){  
-					range = range.cloneRange();  
-					range.setStartAfter(lastNode);  
-					range.collapse(true);  
-					sel.removeAllRanges();  
-					sel.addRange(range);  
-				}  
-			}  
-		}else if(document.selection && document.selection.type !='Control'){  		
-			$(dthis).focus(); //在非标准浏览器中 要先让你需要插入html的div 获得焦点  
-			ierange= document.selection.createRange();//获取光标位置  
-			ierange.pasteHTML(html);    //在光标位置插入html 如果只是插入text 则就是fus.text="..."  
-			$(dthis).focus();      
-   		}  
-	} 
-  	//enter只发送不换行
-	$(window).keydown(function(event){
-		if(event.keyCode ==13){
-			if(event.ctrlKey){
+		if(window.getSelection) { /* IE9 and non-IE   */
+			sel = window.getSelection();
+			if(sel.getRangeAt && sel.rangeCount) {
+				range = sel.getRangeAt(0);
+				range.deleteContents();
+				var el = document.createElement('div');
+				el.innerHTML = html;
+				var frag = document.createDocumentFragment(),
+					node, lastNode;
+				while((node = el.firstChild)) {
+					lastNode = frag.appendChild(node);
+				}
+				range.insertNode(frag);
+				if(lastNode) {
+					range = range.cloneRange();
+					range.setStartAfter(lastNode);
+					range.collapse(true);
+					sel.removeAllRanges();
+					sel.addRange(range);
+				}
+			}
+		} else if(document.selection && document.selection.type != 'Control') {
+			$(dthis).focus(); /* 在非标准浏览器中 要先让你需要插入html的div 获得焦点 */
+			ierange = document.selection.createRange(); /* 获取光标位置 */
+			ierange.pasteHTML(html); /* 在光标位置插入html 如果只是插入text 则就是fus.text="..."  */
+			$(dthis).focus();
+		}
+	} /* enter只发送不换行 */
+	$(window).keydown(function(event) {
+		if(event.keyCode == 13) {
+			if(event.ctrlKey) {
 				add();
-				//document.getElementById("text_content").append("\n");
-				//alert("ctrl+enter换行！")				
-			}else{
+			} else {
 				send();
-				event.cancelBubble=true;
+				event.cancelBubble = true;
 				event.preventDefault();
 				event.stopPropagation();
 			}
 		}
+	}); /* 发送表情 */
+	$("#chat-biaoqing").click(function() {
+		$(".biaoqing-photo").toggle();
 	});
-    //发送表情
-    $("#chat-biaoqing").click(function () {
-        $(".biaoqing-photo").toggle();
-    });
-    $(document).click(function () {
-        $(".biaoqing-photo").css("display", "none");
-    });
-    $("#chat-biaoqing").click(function (event) {
-        event.stopPropagation();//阻止事件
-    });
-
-
-    //发送图片
-    function selectImg(pic) {
-        if (!pic.files || !pic.files[0]) {
-            return;
-        }
-        var reader = new FileReader();
-        reader.onload = function (evt) {
-            var images = evt.target.result;
-            console.log(images);
-          	//接入机器人
-    		if(seat==null){
-    			printUserImgToRobot(images.substr(images.indexOf(',') + 1));
-    			printUserImage(images);
-    		}else{
-    			var	res	=	sendImg(images.substr(images.indexOf(',') + 1));
-    			if(res.res==0){
-    				printUserImage(images);
-    			}
-    		}
-            
-        };
-        reader.readAsDataURL(pic.files[0]);
-
-    }
-    $(".chatBox-head-two").toggle();
-    //向机器人发图片
-	function	printUserImgToRobot(content){
+	$(document).click(function() {
+		$(".biaoqing-photo").css("display", "none");
+	});
+	$("#chat-biaoqing").click(function(event) {
+		event.stopPropagation(); /* 阻止事件 */
+	}); /* 发送图片 */
+	function selectImg(pic) {
+		if(!pic.files || !pic.files[0]) {
+			return;
+		}
+		var reader = new FileReader();
+		reader.onload = function(evt) {
+			var images = evt.target.result;
+			/* 接入机器人 */
+			if(seat == null || seat == 'CSDundefined') {
+				printUserImgToRobot(images.substr(images.indexOf(',') + 1));
+				printUserImage(images);
+			} else {
+				var res = sendImg(images.substr(images.indexOf(',') + 1));
+				if(res.res == 0) {
+					printUserImage(images);
+				}
+			}
+		};
+		reader.readAsDataURL(pic.files[0]);
+	}
+	$(".chatBox-head-two").toggle(); /* 向机器人发图片 */
+	function printUserImgToRobot(content) {
 		$.ajax({
-			type: "POST", //GET或POST,
-			async:true, //默认设置为true，所有请求均为异步请求。
+			type: "POST",
+			async: true,
 			url: "./js/robot/get_Img_robot",
 			data: {
 				data: content
 			},
-			dataType: "json", //xml、html、script、jsonp、text
-			beforeSend:function(){},
-			complete:function(){},
+			dataType: "json",
+			beforeSend: function() {},
+			complete: function() {},
 			success: function(data) {
-				console.log(data)
-				for(var	i=0;i<data.length;i++){
+				for(var i = 0; i < data.length; i++) {
 					printRobotMessage(data[i].values.text);
 				}
 			},
-			error:function(){},
+			error: function() {
+				console.log("printUserImgToRobot");
+			},
 		});
 	}
-	function	printUserImage(images){
-		var	result	=	'<div class="clearfloat"><div class="author-name"><small class="chat-date">'
-					+	getNowFormatDate()
-					+	'</small> </div> <div class="right"> <div class="chat-message"><img src="'
-					+	images
-					+	'"></div> <div class="chat-avatars"><img src="./userchat/img/icon01.png" alt="头像"></div> </div> </div>'
-		$(".chatBox-content-demo").append(result)
-        //聊天框默认最底部
-        $(document).ready(function () {
-            $("#chatBox-content-demo").scrollTop($("#chatBox-content-demo")[0].scrollHeight);
-        });
+	
+	function printUserImage(images) {
+		var result = '<div class="clearfloat"><div class="author-name"><small class="chat-date">' + getNowFormatDate() + '</small> </div> <div class="right"> <div class="chat-message"><img src="' + images + '"></div> <div class="chat-avatars"><img src="' + photoUrl + '" alt="头像"></div> </div> </div>';
+		$(".chatBox-content-demo").append(result); /* 聊天框默认最底部 */
+		$(document).ready(function() {
+			$("#chatBox-content-demo").scrollTop($("#chatBox-content-demo")[0].scrollHeight);
+		});
 	};
-	function	printCustomerImage(data){
-		var	path	=	data.content;
-		var	result	=	'<div class="clearfloat"><div class="author-name"><small class="chat-date">'
-					+	format(data.sendTime)
-					+	'</small></div><div class="left"><div class="chat-avatars"><img src="'
-					+	'./userchat/img/icon01.png'
-					+	'" alt="头像"></div><div class="chat-message"><img src="'
-					+	path
-					+	'" alt=""></div></div></div>'
-		$(".chatBox-content-demo").append(result);
-		//聊天框默认最底部
-        $(document).ready(function () {
-            $("#chatBox-content-demo").scrollTop($("#chatBox-content-demo")[0].scrollHeight);
-        });
+	
+	function printCustomerImage(data) {
+		var path = data.content;
+		var result = '<div class="clearfloat"><div class="author-name"><small class="chat-date">' + format(data.sendTime) + '</small></div><div class="left"><div class="chat-avatars"><img src="' + './userchat/img/icon01.png' + '" alt="头像"></div><div class="chat-message"><img src="' + path + '" alt=""></div></div></div>';
+		$(".chatBox-content-demo").append(result); /* 聊天框默认最底部 */
+		$(document).ready(function() {
+			$("#chatBox-content-demo").scrollTop($("#chatBox-content-demo")[0].scrollHeight);
+		});
 	}
 </script>
-
-<div style="text-align:center;margin:50px 0; font:normal 14px/24px 'MicroSoft YaHei';">
-<p>适用浏览器：360、FireFox、Chrome、Safari、Opera、傲游、搜狗、世界之窗. 不支持IE8及以下浏览器。</p>
-</div>
 </body>
 </html>
 

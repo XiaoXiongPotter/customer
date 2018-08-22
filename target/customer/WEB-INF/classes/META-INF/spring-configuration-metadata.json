@@ -1,0 +1,35 @@
+{
+  "groups": [{
+    "name": "spring.redis",
+    "type": "com.dognessnetwork.customer.domain.RedisConn",
+    "sourceType": "com.dognessnetwork.customer.domain.RedisConn"
+  }],
+  "properties": [
+    {
+      "name": "spring.redis.database",
+      "type": "java.lang.Integer",
+      "sourceType": "com.dognessnetwork.customer.domain.RedisConn"
+    },
+    {
+      "name": "spring.redis.host",
+      "type": "java.lang.String",
+      "sourceType": "com.dognessnetwork.customer.domain.RedisConn"
+    },
+    {
+      "name": "spring.redis.password",
+      "type": "java.lang.String",
+      "sourceType": "com.dognessnetwork.customer.domain.RedisConn"
+    },
+    {
+      "name": "spring.redis.port",
+      "type": "java.lang.Integer",
+      "sourceType": "com.dognessnetwork.customer.domain.RedisConn"
+    },
+    {
+      "name": "spring.redis.timeout",
+      "type": "java.lang.Integer",
+      "sourceType": "com.dognessnetwork.customer.domain.RedisConn"
+    }
+  ],
+  "hints": []
+}

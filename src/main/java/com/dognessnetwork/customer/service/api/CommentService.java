@@ -9,4 +9,5 @@ import org.springframework.roo.addon.layers.service.annotations.RooService;
  */
 @RooService(entity = Comment.class)
 public interface CommentService {
+    void    scoring (Comment    comment);
 }

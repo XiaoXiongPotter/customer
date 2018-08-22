@@ -107,10 +107,10 @@ public class FileToPack {
             }
         }
     }
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         String sourceFilePath = "E:/apache-tomcat-8.5.28/webapps/img/deviceQr/E/A/A/180730/";
         String zipFilePath = "180730";
         String fileName = "180730";
         fileToZip(sourceFilePath,zipFilePath, fileName);
-    }
+    }*/
 }
