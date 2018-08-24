@@ -8,13 +8,16 @@
 			dataType: "json",
 			success: function(data) {
 				console.log(data)
-				var	array	=	data.data;
-				if(array.length>0){
-					for(var	i=0;i<array.length;i++){
-						
-						show_device(array[i].device)
+				if(data.data!=null){
+					var	array	=	data.data;
+					if(array.length>0){
+						for(var	i=0;i<array.length;i++){
+							
+							show_device(array[i].device)
+						}
 					}
 				}
+				
 				
 			},
 			error:function(data){console.log(data)},
@@ -95,13 +98,16 @@
 			dataType: "json",
 			success: function(data) {
 				console.log(data)
-				var	array	=	data.data;
-				if(array.length>0){
-					for(var	i=0;i<array.length;i++){
-						
-						show_pet(array[i])
+				if(data.data!=null){
+					var	array	=	data.data;
+					if(array.length>0){
+						for(var	i=0;i<array.length;i++){
+							
+							show_pet(array[i])
+						}
 					}
 				}
+				
 				
 			},
 			error:function(data){console.log(data)},

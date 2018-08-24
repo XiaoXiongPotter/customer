@@ -19,49 +19,49 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 
 @RestController
-@RequestMapping(value = "/js/userChat",name = "UserChatJson")
+@RequestMapping(value = "/js/userChat", name = "UserChatJson")
 public class UserChatJson {
+
     @Value("${userServer}")
     private String user;
-    
+
     @Autowired
-    private RedisService    redisService;
-    
+    private RedisService redisService;
+
     @ResponseBody
     @PostMapping("/get_user")
-    public  String  get_user(String room){
-        String  mine    =   redisService.getStr(room);
-        //JSONObject  js  =   JSONUtil.parseObj(mine);
-        return  mine;
+    public String get_user(String room) {
+        String mine = redisService.getStr(room);
+        // JSONObject js = JSONUtil.parseObj(mine);
+        return mine;
     }
-    
+
     @ResponseBody
     @PostMapping("/get_user_info")
-    public  String  get_user_info(String token){
+    public String get_user_info(String token) {
         HashMap<String, Object> paramMap = new HashMap<>();
         paramMap.put("x-auth-token", token);
-        String result= HttpUtil.post(user+"/getLoginUser", paramMap);
-        return  result;
+        String result = HttpUtil.post(user + "/getLoginUser", paramMap);
+        return result;
     }
-    
+
     /**
-     * /js/userChat/get_login_user
-     * 获取登陆用户信息
+     * /js/userChat/get_login_user 获取登陆用户信息
+     * 
      * @param username
      * @return
      */
     @ResponseBody
     @PostMapping("/get_login_user")
-    public  String  getLoginUser(String username,HttpServletRequest request){
+    public String getLoginUser(String username, HttpServletRequest request) {
         Console.log(username);
-        String  mine    =   redisService.getStr(username);
-        JSONObject  js  =   JSONUtil.parseObj(mine);
+        String mine = redisService.getStr(username);
+        JSONObject js = JSONUtil.parseObj(mine);
         ;
         HashMap<String, Object> paramMap = new HashMap<>();
         paramMap.put("x-auth-token", js.getStr("token"));
-        String result= HttpUtil.post(user+"/getLoginUser", paramMap);
-        JSONObject  res =   new JSONObject();
-        
-        return  result;
+        String result = HttpUtil.post(user + "/getLoginUser", paramMap);
+
+        return result;
     }
 }

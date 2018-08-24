@@ -50,7 +50,10 @@
     		},
     		dataType: "json",
     		success: function(data) {
-    			photoUrl	=	data.data.photoUrl;
+    			if(data.data!=null){
+    				photoUrl	=	data.data.photoUrl;
+    			}
+    			
     		},
     		error:function(){console.log('get_login_user')},
     	})
@@ -421,8 +424,8 @@
 					}
 			});
 		$("#username").html('<legend>'+name+'</legend>')
-		var	iw	=	2*document.documentElement.clientWidth/6+'px';
-		var	ih	=	0.2*document.documentElement.clientHeight/6+'px';
+		var	iw	=	2*document.documentElement.clientWidth/8+'px';
+		var	ih	=	0.2*document.documentElement.clientHeight/8+'px';
 		$("#logo").attr("src","/js/comments/getAvg?seat="+name+"");
 		$("#logo").css({width:iw,height:ih});
 		$("#tjpj").click(function(){

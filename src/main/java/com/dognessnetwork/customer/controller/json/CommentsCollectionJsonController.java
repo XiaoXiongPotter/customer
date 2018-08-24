@@ -1,9 +1,7 @@
 package com.dognessnetwork.customer.controller.json;
-import com.dognessnetwork.customer.domain.ChatRoom;
 import com.dognessnetwork.customer.domain.Comment;
 import com.dognessnetwork.customer.service.api.ChatRoomService;
 
-import cn.hutool.core.util.ImageUtil;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -51,6 +49,7 @@ public class CommentsCollectionJsonController {
     public String score(String  fromPetUser,String    seat,String content,String  star){
         
         Comment comment =   new Comment();
+        comment.setCommentTime(System.currentTimeMillis());
         comment.setContent(content);
         comment.setStar(Integer.parseInt(star));
         comment.setFromPetUser(fromPetUser);
@@ -76,7 +75,7 @@ public class CommentsCollectionJsonController {
         g.setClip(0, 0, width, height);  
         g.setColor(Color.white);  
         g.fillRect(0, 0, width, height);// 先用黑色填充整张图片,也就是背景  
-        g.setColor(Color.black);// 在换成黑色  
+        g.setColor(Color.red);// 在换成黑色  
         g.setFont(font);// 设置画笔字体  
         /** 用于获得垂直居中y */  
         Rectangle clip = g.getClipBounds();  
@@ -85,7 +84,7 @@ public class CommentsCollectionJsonController {
         int descent = fm.getDescent();  
         int y = (clip.height - (ascent + descent)) / 2 + ascent;  
         for (int i = 0; i < 6; i++) {// 256 340 0 680  
-            g.drawString("综合评分:"+chatroomService.findBySeat(seat).getAvgrate()+"分", i * 680, y);// 画出字符串  
+            g.drawString("  "+chatroomService.findBySeat(seat).getAvgrate(), i * 680, y);// 画出字符串  
         }  
         g.dispose();  
         if(image!=null){

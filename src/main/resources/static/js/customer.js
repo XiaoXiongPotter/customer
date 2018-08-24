@@ -1,3 +1,29 @@
+	/*获取当前客服基本信息*/
+	function	get_customer() {
+			$.ajax({
+				type: "GET",
+				async:false,
+				url: "/js/petUser/get_customer",
+				dataType: "text",
+				success: function(data) {
+					console.log("获取客服基本信息>>>>");
+					seat = "CSD"+data/* data.sign+data.username */;
+					//myInfo	=	data;
+					console.log("seat>>>>"+seat);
+					
+					var	info=	'<a href="javascript:;"><img src="/layui/images/img/tu2.png" class="layui-nav-img">'+data+'</a>'
+							+	'<dl class="layui-nav-child">'
+			          		+	'<dd><a href="">基本资料</a></dd>'
+			          		+	'<dd><a href="">安全设置</a></dd>'
+			        		+	'</dl>';
+			        		
+		        	$("#myInfo").append(info);
+						
+					},
+					error:function(){console.log("get_customer")},
+			});
+		}
+	
 	function	getSockJS(){
     	var	SockJS;
     	$.ajax({
@@ -9,9 +35,10 @@
     			SockJS=data
     		}
     	})
-    	console.log("获取到的SOCKJS"+SockJS);
+    	console.log("获取到的SOCKJS");
     	return	SockJS;
     }
+	
     function	getWeSocket(){
     	var	wesocket;
     	$.ajax({
@@ -23,9 +50,34 @@
     			wesocket=data
     		}
     	})
-    	console.log("获取到的WEBSOCKET"+wesocket);
+    	console.log("获取到的WEBSOCKET");
     	return	wesocket;
     }
+    /*获取到的在线客服列表*/
+    function	get_can_get_time(seat){
+		$.ajax({
+			type: "POST", //GET或POST,
+			async:true, //默认设置为true，所有请求均为异步请求。
+			url: "/js/chatrooms/get_can_get_time",
+			data: {
+				seat:seat
+			},
+			dataType: "json", //xml、html、script、jsonp、text
+			success: function(data) {
+				console.log("空闲客服")
+				console.log(data)
+				if(data.res.length>0){
+					for(var	m=0;m<data.res.length;m++){
+						var	result	=	'<dd><a href="" onclick="zhuanjie(this.id)" id="CSD'+data.res[m]+'">'
+									+	data.res[m]
+									+	'</a></dd>'
+						$("#zhuanjie").append(result);
+					}
+				}
+			},
+			error:function(){},
+		});
+	}
     //发送消息并返回结果
     function	sendMsg(content){
     	var	res;
@@ -244,8 +296,8 @@
 			},
 			dataType: "json",
 			success: function(data) {
-				thatday	=	thatday-(86400000);
-		    	console.log(day)
+				/*thatday	=	*/thatday-(86400000);
+		    	console.log(day);
 				var	array	=	data.data;
 				console.log(array)
 				if(array.length>0){
@@ -260,44 +312,49 @@
         
     }
     function	PRINT(array){
-    	console.log(array)
+    	
 			for(var	i=0;i<array.length;i++){
-				if(array[i].toUser.substring(0,3)=='PFU'){
+				console.log(petUser)
+				//console.log(array[i].toUser)
+				/*if(array[i].toUser.substring(0,3)=='PFU'){
 					tousername=array[i].toUser;
-					console.log(tousername)
-				}
-				if(array[i].formUser.substring(0,3)==seat.substring(0,3)){
-					if(array[i].messageType=='Text'){
-						printFormUserMessage(array[i].postMessages,format(array[i].sendTime),array[i].formUser.substring(3))
-						if(i==array.length-1){_refreshText.innerHTML ='';}
-						else{
-				            _refreshText.innerHTML = '<div class="sk-three-bounce"><div class="sk-child sk-bounce1"></div><div class="sk-child sk-bounce2"></div><div class="sk-child sk-bounce3"></div></div>';
-						}
-					}else
-					if(array[i].messageType=="Picture"){
-						printFormUserImage(array[i].postMessages,format(array[i].sendTime),array[i].formUser.substring(3))
-						if(i==array.length-1){_refreshText.innerHTML ='';}
-						else{
-				            _refreshText.innerHTML = '<div class="sk-three-bounce"><div class="sk-child sk-bounce1"></div><div class="sk-child sk-bounce2"></div><div class="sk-child sk-bounce3"></div></div>';
-						}
-					}
 					
-				}else{
-					if(array[i].messageType=='Text'){
-						printToUserMessage(array[i].postMessages,format(array[i].sendTime),array[i].formUser.substring(3))
-						if(i==array.length-1){_refreshText.innerHTML ='';}
-						else{
-				            _refreshText.innerHTML = '<div class="sk-three-bounce"><div class="sk-child sk-bounce1"></div><div class="sk-child sk-bounce2"></div><div class="sk-child sk-bounce3"></div></div>';
+				}*/
+				if(array[i].petUserName=='PFU'+petUser){
+					if(array[i].formUser.substring(0,3)==seat.substring(0,3)){
+						if(array[i].messageType=='Text'){
+							printFormUserMessage(array[i].postMessages,format(array[i].sendTime),array[i].formUser.substring(3))
+							if(i==array.length-1){_refreshText.innerHTML ='';}
+							else{
+					            _refreshText.innerHTML = '<div class="sk-three-bounce"><div class="sk-child sk-bounce1"></div><div class="sk-child sk-bounce2"></div><div class="sk-child sk-bounce3"></div></div>';
+							}
+						}else
+						if(array[i].messageType=="Picture"){
+							printFormUserImage(array[i].postMessages,format(array[i].sendTime),array[i].formUser.substring(3))
+							if(i==array.length-1){_refreshText.innerHTML ='';}
+							else{
+					            _refreshText.innerHTML = '<div class="sk-three-bounce"><div class="sk-child sk-bounce1"></div><div class="sk-child sk-bounce2"></div><div class="sk-child sk-bounce3"></div></div>';
+							}
 						}
-					}else
-					if(array[i].messageType=="Picture"){
-						printToUserImage(array[i].postMessages,format(array[i].sendTime),array[i].formUser.substring(3))
-						if(i==array.length-1){_refreshText.innerHTML ='';}
-						else{
-				            _refreshText.innerHTML = '<div class="sk-three-bounce"><div class="sk-child sk-bounce1"></div><div class="sk-child sk-bounce2"></div><div class="sk-child sk-bounce3"></div></div>';
+						
+					}else if(array[i].formUser=='PFU'+petUser) {
+						if(array[i].messageType=='Text'){
+							printToUserMessage(array[i].postMessages,format(array[i].sendTime),array[i].formUser.substring(3))
+							if(i==array.length-1){_refreshText.innerHTML ='';}
+							else{
+					            _refreshText.innerHTML = '<div class="sk-three-bounce"><div class="sk-child sk-bounce1"></div><div class="sk-child sk-bounce2"></div><div class="sk-child sk-bounce3"></div></div>';
+							}
+						}else
+						if(array[i].messageType=="Picture"){
+							printToUserImage(array[i].postMessages,format(array[i].sendTime),array[i].formUser.substring(3))
+							if(i==array.length-1){_refreshText.innerHTML ='';}
+							else{
+					            _refreshText.innerHTML = '<div class="sk-three-bounce"><div class="sk-child sk-bounce1"></div><div class="sk-child sk-bounce2"></div><div class="sk-child sk-bounce3"></div></div>';
+							}
 						}
 					}
 				}
+				
 			}
 		
     }
@@ -387,10 +444,29 @@
     			
     			console.log(data)
     			//photoUrl=data.data.photoUrl;
-    			show_user(data.data);
-    			photoUrl	=	data.data.photoUrl;
+    			if(data.data!=null){
+    				show_user(data.data);
+        			photoUrl	=	data.data.photoUrl;
+    			}
     		}
     	})
+    }
+    
+    function	get_online_user(petUser){
+    	var	res;
+    	$.ajax({
+    		type: "POST",
+    		async:false,
+    		url: "/js/userChat/get_login_user",
+    		data:{
+    			username:petUser
+    		},
+    		dataType: "json",
+    		success: function(data) {
+    			res=data.data;
+    		}
+    	})
+    	return	res;
     }
     
     function	show_user(data){

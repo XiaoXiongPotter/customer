@@ -495,6 +495,7 @@
   </div>
 </div>
 <script src="./layui/jquery-2.1.4.js"></script>
+<script src="./js/base64.js"></script>
 <script src="./layui/layui.js"></script>
 <script src="./js/customer.js"></script>
 <script src="./js/user_device.js"></script>
@@ -503,505 +504,397 @@
 <script src="./webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
 <script>
 
-	//JavaScript代码区域
-	layui.use('element', function(){
-	  var element = layui.element;
-	  
+	/* JavaScript代码区域 */
+	layui.use('element', function() {
+		var element = layui.element;
+
 	});
-	$(".chat-body").fadeToggle();
-	
-	//获取当前用户基本信息
-	var	petUser;
+	/* $(".chat-body").fadeToggle(); */
+
+	/* 获取当前用户基本信息 */
+	var petUser;
 	var room;
-	var	seat;
-	var	myInfo;
-	var	message;
-	var	sendData;
-	var	tousername;
-	var	photoUrl;
-	$(function	(){
-		 /* $.ajax({
-			type: "POST", //GET或POST,
-			async:true, //默认设置为true，所有请求均为异步请求。
-			url: "http://192.168.0.197:8088/users/query_by_username",
-			data:{username:"lisisi"},
-			dataType: "json", //xml、html、script、jsonp、text
-			crossDomain: true,
-			xhrFields:{
-		        withCredentials:true
-		    },
-			success: function(data) {
-				//获取到正在请求的用户
-				console.log(data)
-				seat="CSD"+data.data.username;
-				var	info='<a href="javascript:;"><img src="/layui/images/img/tu2.png" class="layui-nav-img">'+data.data.username+'</a>'
-				+'<dl class="layui-nav-child">'
-          		+'<dd><a href="">基本资料</a></dd>'
-          		+'<dd><a href="">安全设置</a></dd>'
-        		+'</dl>'
-        		$("#myInfo").append(info)
-			},error:function(e){
-				console.log('>>>>>>>>>>')
-				console.log(e)
-				console.log('>>>>>>>>>>')
-				}
-			
-			});  */
-	$.ajax({
-		type: "GET", //GET或POST,
-		async:false, //默认设置为true，所有请求均为异步请求。
-		url: "/js/petUser/get_customer",
-		dataType: "text", //xml、html、script、jsonp、text
-		success: function(data) {
-			console.log("客服基本信息当前>>>>")
-			seat = "CSD"+data/* data.sign+data.username */;
-			myInfo	=	data;
-			console.log(data)
-			console.log("用户基本信息当前ID>>>>"+data)
-			var	info=	'<a href="javascript:;"><img src="/layui/images/img/tu2.png" class="layui-nav-img">'+data+'</a>'
-					+	'<dl class="layui-nav-child">'
-	          		+	'<dd><a href="">基本资料</a></dd>'
-	          		+	'<dd><a href="">安全设置</a></dd>'
-	        		+	'</dl>'
-        	$("#myInfo").append(info)
-				/* if(data.sign.length>0){
-					getPetUserList(data.sign)
-				} */
-				
-			},
-			error:function(){console.log("error")},
-	}); 
-			
-	var websocket;
-	if ('WebSocket' in window) {
-		websocket = new WebSocket(getWeSocket()+"?uid="+seat);
-		console.log(websocket)
-	} else if ('MozWebSocket' in window) {
-		websocket = new MozWebSocket(getWeSocket()+seat);
-	} else {
-		websocket = new SockJS(getSockJS()+seat);
-	}
-	websocket.onmessage = function(event) {
-		var data=JSON.parse(event.data);
-		console.log(data)
-		if(data.header.code==6000){
-			console.log("获取到的在线客服列表");
-			
-			var	CSD		=	data.data.CSD;
-			var	CSDlen	=	data.data.CSD.length;
-			var	PFU		=	data.data.PFU;
-			var	PFUlen	=	data.data.PFU.length;
-			if(CSDlen>0){
-				console.log(data.data.CSD)
-				for(var	i=0;i<CSDlen;i++){
-					//查询客服在线空闲
-					$.ajax({
-						type: "POST", //GET或POST,
-						async:true, //默认设置为true，所有请求均为异步请求。
-						url: "/js/chatrooms/get_can_get_time",
-						data: {
-							seat:CSD[i].substring(3)
-						},
-						dataType: "json", //xml、html、script、jsonp、text
-						success: function(data) {
-							console.log("空闲客服")
-							console.log(data)
-							if(data.res.length>0){
-								for(var	m=0;m<data.res.length;m++){
-									var	result	=	'<dd><a href="" onclick="zhuanjie(this.id)" id="CSD'+data.res[m]+'">'
-												+	data.res[m]
-												+	'</a></dd>'
-									$("#zhuanjie").append(result);
-								}
-							}
-						},
-						error:function(){},
-					});
-					
-				}
-				
-			}
-			console.log("获取到的在线用户列表");
-			
-			if(PFUlen>0){
-				console.log(data.data.PFU)
-				for(var	i=0;i<PFUlen;i++){
-					
-					var result = '<dd class="'+PFU[i]+'"><a href="#"	onclick="jr(this.id)"	id="'+PFU[i]+'">'+PFU[i].substring(3)+'</a></dd>'
-					$("#userOnline").append(result)
-				}
-	        	//调用后台查询那些是没有接入的
-	        	//get_petUser_is_accessing(data.data.PFU);
-	        } else {
-	            //没有请求用户的情况
-	            console.log("无用户")
-	        }
+	var seat;
+	var message;
+	var tousername;
+	var photoUrl;
+	var CSD;
+	var PFU;
+	$(function() {
+
+		get_customer();
+
+		var websocket;
+		if ('WebSocket' in window) {
+			websocket = new WebSocket(getWeSocket() + "?uid=" + seat);
+		} else if ('MozWebSocket' in window) {
+			websocket = new MozWebSocket(getWeSocket() + seat);
+		} else {
+			websocket = new SockJS(getSockJS() + seat);
 		}
-		if(data.header.code==6002){
-			console.log("上线");
-			console.log(data.data);
-			var mycars=new Array(data.data);
-			for(var	i=0;i<mycars.length;i++){
-				
-				var result = '<dd class="'+mycars[i]+'"><a href="#"	onclick="jr(this.id)"	id="'+mycars[i]+'">'+mycars[i].substring(3)+'</a></dd>'
-				$("#userOnline").append(result)
-			}
-			//调用后台查询那些是没有接入的
-        	//get_petUser_is_accessing(mycars);
-		}
-		if(data.header.code==6003){
-			console.log("下线");
-			console.log(data.data);
-		}
-		if(data.header.code==6666){
-			if(data.data.msgType=='Picture'){
-				getImage(data.data)
-			}
-			if(data.data.msgType=='Text'){
-				
-				var	fromUser	=	data.data.fromUser;
-				if(data.data.content=='人工'){
-					$("#djr").append($('#'+fromUser).clone());
-					$('.'+fromUser).detach();
+		websocket.onmessage = function(event) {
+			var data = JSON.parse(event.data);
+			console.log(data);
+			/* 6000列出所有用户 */
+			if (data.header.code == 6000) {
+				CSD = data.data.CSD;
+				var CSDlen = CSD.length;
+				PFU = data.data.PFU;
+				var PFUlen = PFU.length;
+
+				if (CSDlen > 0) {
+
+					console.log("获取到的在线客服列表");
+					console.log(data.data.CSD);
+
+					for (var i = 0; i < CSDlen; i++) {
+						get_can_get_time(CSD[i].substring(3));
+					}
+
 				}
-				else	if(data.data.content.substring(0,8)=='Transfer'){
-					alertTransfer(data.data.content.substring(9))
-				}
-				else	if(data.data.content.substring(0,10)=='DenyAccess'){
-					
-					alertDenyAccess(data.data.content.substring(11))
-				}
-				else{
-					getMessage(data.data)
+
+				if (PFUlen > 0) {
+					console.log("获取到的在线用户列表");
+					console.log(data.data.PFU);
+					for (var i = 0; i < PFUlen; i++) {
+
+						var result = '<dd class="'+PFU[i]+'"><a href="#"	onclick="jr(this.id)"	id="'
+								+ PFU[i]
+								+ '">'
+								+ PFU[i].substring(3)
+								+ '</a></dd>';
+						$("#userOnline").append(result);
+					}
+				} else {
+					/* 没有请求用户的情况 */
+					console.log("无用户");
 				}
 			}
-		}
-	}
-	/* //接收消息
-	console.log("接收坐席号："+seat);
-	var	socketService	=	getSockJS();
-	//上线
-	var socket = new SockJS(socketService+"/socketjs?uid="+seat);
-	//创建监听客户端
-	var stompClient = Stomp.over(new SockJS(socketService));
-	//监听socket服务器发送的消息
-	wesocket = new WebSocket(getWeSocket()+"?uid="+seat);
-	wesocket.onmessage = function(msg) {
-		console.log("获取到的在线用户列表");
-		console.log(msg);
-		var json = JSON.parse(msg.data);
-		console.log(json);
-		var	len	=	json.length;
-    	//获取到的在线用户列表
-    	if(len>0){
-        	//调用后台查询那些是没有接入的
-        	get_petUser_is_accessing(json)
-        } else {
-            //没有请求用户的情况
-            console.log("无用户")
-        }
-            
-	};
-	stompClient.connect({},function(frame) {
-		stompClient.subscribe('/topic/customer/' + seat,
-		function(data) {
-			var json = JSON.parse(data.body);
-			console.log("接收到的数据")
-			console.log(json)
-			//petUser=json;
-			if(json.content=='人工'){
-				//var result = '<dd class=""><a href="#"	onclick="jr(this.id)"	id="'+json.fromUser+'">'+json.userName+'</a></dd>'
-				$("#djr").append($('#'+json.fromUser).clone());
-				$('.'+json.fromUser).detach();
-				console.log("转移")
-				//让用户在当前客服下排队
-				//queue(json.fromUser)
-			}else{
-				getMessage(json)
+			/* 6002添加上线用户到列表 */
+			if (data.header.code == 6002) {
+				var mycars = new Array(data.data);
+
+				for (var i = 0; i < mycars.length; i++) {
+
+					if ($.inArray(mycars[i], PFU) == (-1)) {
+
+						var result = '<dd class="'+mycars[i]+'"><a href="#"	onclick="jr(this.id)"	id="'
+								+ mycars[i]
+								+ '">'
+								+ mycars[i].substring(3)
+								+ '</a></dd>';
+						$("#userOnline").html(result);
+					}
+
+				}
 			}
-		});
-	}); */
-	})
-	//判断是否接入
-	function	get_petUser_is_accessing(e){
+			/* 6003下线 */
+			if (data.header.code == 6003) {
+				console.log(data.data);
+			}
+			/* 6666消息通道 */
+			if (data.header.code == 6666) {
+				if (data.data.msgType == 'Picture') {
+					getImage(data.data);
+				}
+				if (data.data.msgType == 'Text') {
+
+					var fromUser = data.data.fromUser;
+					if (data.data.content == '人工') {
+						$("#djr").append($('#' + fromUser).clone());
+						$('.' + fromUser).detach();
+					} else if (data.data.content.substring(0, 8) == 'Transfer') {
+						alertTransfer(data.data.content.substring(9));
+					} else if (data.data.content.substring(0, 10) == 'DenyAccess') {
+
+						alertDenyAccess(data.data.content.substring(11));
+					} else {
+						getMessage(data.data);
+					}
+				}
+			}
+		};
+	});
+	/* 判断是否接入 */
+	/* function get_petUser_is_accessing(e) {
 		console.log("是否接入");
 		console.log(e);
-		$.ajax({
-			type: "POST", //GET或POST,
-			async:false, //默认设置为true，所有请求均为异步请求。
-			url: "/js/chatrooms/get_petUser_is_accessing",
-			data:{array:e},
-			dataType: "json", //xml、html、script、jsonp、text
-			success: function(data) {
-				//获取到正在请求的用户
-				console.log(data)
-				for(var	i=0;i<data.length;i++){
-					
-					var result = '<dd class="PFU'+data[i]+'"><a href="#"	onclick="jr(this.id)"	id="PFU'+data[i]+'">'+data[i]+'</a></dd>'
-					$("#userOnline").append(result)
-				}
-				
-			},
-			error:function(){},
-		});
-	}
-	//排队
-	/* function	queue(id){
-			$.ajax({
-				type: "GET", //GET或POST,
-				async:false, //默认设置为true，所有请求均为异步请求。
-				url: "/js/petusers/queue?id="+id,
-				dataType: "json", //xml、html、script、jsonp、text
-				success: function(data) {
-					
-				},
-				error:function(){},
-			}); 
-		} */
-	
-	//接入操作
-	function	jr(id){
-		console.log("用户ID>>>")
-		console.log(id)
-		tousername=id;
-		//接入用户，查询用户信息
-		$.ajax({
-				type: "POST", //GET或POST,
-				async:false, //默认设置为true，所有请求均为异步请求。
-				url: "/js/chatrooms/customer_access",
-				data:{
-					petUser	:	id,
-					seat	:	seat
+		$
+				.ajax({
+					type : "POST",
+					async : false,
+					url : "/js/chatrooms/get_petUser_is_accessing",
+					data : {
+						array : e
 					},
-				dataType: "json", //xml、html、script、jsonp、text
-				success: function(data) {
-					console.log(data)
-					petUser	=	data.res.toUser;
-					var	customer	=	data.res.formUser;
-					var	sendTime	=	data.res.sendTime;
-					var	avatar	=	data.res.avatar;
-					var	content	=	data.res.content;
-					if(data.code==0){
-						room	=	customer;
-						get_login_user();
-						PETUSER	=	data;
-						get_all_device();
-						get_all_pet();
-						$('#PFU'+petUser).detach();
-						var result = '<dd class="'+petUser+'"><a href="#"	onclick="switchUser(this.id)"	id="'+petUser+'">'+petUser+'</a></dd>'
-						$("#Receiving").append(result);
-						
-						var	mineMsg	=	'<li class="layim-chat-mine">'
-									+	'<div class="layim-chat-user"> <img src="'
+					dataType : "json",
+					success : function(data) {
+						/* 获取到正在请求的用户 */
+						/* console.log(data);
+						for (var i = 0; i < data.length; i++) {
+
+							var result = '<dd class="PFU'+data[i]+'"><a href="#"	onclick="jr(this.id)"	id="PFU'
+									+ data[i] + '">' + data[i] + '</a></dd>';
+							$("#userOnline").append(result);
+						}
+
+					},
+					error : function() {
+					},
+				});
+	} */ 
+
+	/* 接入操作 */
+	function jr(id) {
+		console.log("用户ID>>>");
+		console.log(id);
+		tousername = id;
+
+		/* 接入用户，查询用户信息 */
+		$.ajax({
+					type : "POST",
+					async : false,
+					url : "/js/chatrooms/customer_access",
+					data : {
+						petUser : id,
+						seat : seat
+					},
+					dataType : "json",
+					success : function(data) {
+						console.log(data);
+						petUser = data.res.toUser;
+						var customer = data.res.formUser;
+						var sendTime = data.res.sendTime;
+						var avatar = data.res.avatar;
+						var content = data.res.content;
+
+						$('#printMsg ul').empty();
+						refresh();
+						if (data.code == 0) {
+							room = customer;
+							get_login_user();
+							PETUSER = data;
+							get_all_device();
+							get_all_pet();
+
+							/* $('#PFU'+petUser).detach(); */
+							var result = '<dd class="'+petUser+'"><a href="#"	onclick="switchUser(this.id)"	id="'
+									+ petUser + '">' + petUser + '</a></dd>';
+							$("#Receiving").html(result);
+
+							var mineMsg = '<li class="layim-chat-mine">'
+									+ '<div class="layim-chat-user"> <img src="'
 									+	avatar
 									+	'"><cite><i>'
-									+	format(sendTime)
-									+	'</i>'
-									+	customer
-									+	'</cite> </div><div class="layim-chat-text">'
-									+	content
-									+	'</div>'
-									+	'</li>';
-						$("#printMsg ul").append(mineMsg);
-						
-						
-					}else{
-						var	content	=	"接入失败";
-						alertInfo(content);
-					}
-					
-				},
-				error:function(){alert('eoo')},
-			});
-		$(".chat-body").fadeToggle(1);
-		
+									+ format(sendTime)
+									+ '</i>'
+									+ customer
+									+ '</cite> </div><div class="layim-chat-text">'
+									+ content + '</div>' + '</li>';
+							$("#printMsg ul").append(mineMsg);
+
+						} else {
+							var content = "接入失败";
+							alertInfo(content);
+						}
+
+					},
+					error : function() {
+						alert('eoo')
+					},
+				});
+		/* $(".chat-body").fadeToggle(1); */
+
 	}
-	$(function(){
+	$(function() {
 		$('#chat-biaoqing').qqFace({
-			id : 'facebox', 
-			assign:'messages', 
-			path:'./userchat/img/arclist/'	//表情存放的路径"src/main/resources/static"
+			id : 'facebox',
+			assign : 'messages',
+			path : './userchat/img/arclist/' /* 表情存放的路径"src/main/resources/static" */
 		});
 	});
-	function	showQQFace(){}//删除会报错
-	//查看结果
-	function replace_em(str){
-		str = str.replace(/\</g,'&lt;');
-		str = str.replace(/\>/g,'&gt;');
-		str = str.replace(/\n/g,'<br/>');
-		str = str.replace(/\[em_([0-9]*)\]/g,'<img	style="width: 24px;height: 24px;" src="./userchat/img/arclist/$1.gif" border="0" />');
+	function showQQFace() {
+	}/* 删除会报错 */
+	/* 查看结果 */
+	function replace_em(str) {
+		str = str.replace(/\</g, '&lt;');
+		str = str.replace(/\>/g, '&gt;');
+		str = str.replace(/\n/g, '<br/>');
+		str = str
+				.replace(
+						/\[em_([0-9]*)\]/g,
+						'<img	style="width: 24px;height: 24px;" src="./userchat/img/arclist/$1.gif" border="0" />');
 		return str;
 	}
-	function	send() {
-		console.log("发送数据：")
+	function send() {
+		console.log("发送数据：");
+		console.log(seat, tousername);
 		/* console.log(message) */
-		message	=	$("#messages").val();
-		var	messages	=	replace_em(message)
-		console.log(messages)
-		if(message.length==0){
-			var	content	=	"消息内容不能为空！";
+		message = $("#messages").val();
+		var messages = replace_em(message);
+		console.log(messages);
+		if (message.length == 0) {
+			var content = "消息内容不能为空！";
 			alertInfo(content);
-		}else{
-			$.ajax({
-				type: "POST", //GET或POST,
-				async:false, //默认设置为true，所有请求均为异步请求。
-				url: "/js/messageses/sendMsg",
-				data: {
-					formUser: seat, 
-					toUser : /* petUser.fromUser */tousername,
-					postMessages : /* sendData.content */messages
-				},
-				dataType: "json", //xml、html、script、jsonp、text
-				success: function(data) {
-					console.log("消息发送结果");
-					console.log(data);
-					if(data.res==1){
-						var	content	=	"消息发送失败";
-						alertInfo(content);
-					}else{
-						//清空输入框拼接
-						$("#messages").val("");
-						//printMessage(messages)
-						printFormUserMessage(messages,getNowFormatDate(),seat)
-					}
-				},
-				error:function(){alert('eoo')},
-			});
+		} else {
+			$
+					.ajax({
+						type : "POST",
+						async : false,
+						url : "/js/messageses/sendMsg",
+						data : {
+							formUser : seat,
+							toUser : tousername,
+							postMessages : messages
+						},
+						dataType : "json",
+						success : function(data) {
+							console.log("消息发送结果");
+							console.log(data);
+							if (data.res == 1) {
+								var content = "消息发送失败";
+								alertInfo(content);
+							} else {
+								/* 清空输入框拼接 */
+								$("#messages").val("");
+								/* printMessage(messages) */
+								printFormUserMessage(messages,
+										getNowFormatDate(), seat);
+							}
+						},
+						error : function() {
+							alert('eoo')
+						},
+					});
 		}
 		new_news();
 	}
-	function	getMessage(json){
+	function getMessage(json) {
 		printUserMessage(json);
 	}
-	function	getImage(data){
-		var	path	=	data.content;
-		
-		var	image	=	'<li>'
-					+	'<div class="layim-chat-user"> <img src="'
+	function getImage(data) {
+		var path = data.content;
+
+		var image = '<li>'
+				+ '<div class="layim-chat-user"> <img src="'
 					+	photoUrl
 					+	'"> <cite class="layim-chat-user-cite">tml <i>'
-					+	format(data.sendTime)
-					+	'</i> </cite> </div>'
-					+	'<div class="layim-chat-user-text"><img src="'
+				+ format(data.sendTime)
+				+ '</i> </cite> </div>'
+				+ '<div class="layim-chat-user-text"><img src="'
 					+	path
-					+	'"></div></li>'
+					+	'"></div></li>';
 		$("#printMsg ul").append(image);
 	}
-	$("#send").click(function(){
+	$("#send").click(function() {
 		send();
 	})
-	//enter事件
-	$(window).keydown(function(event){
-		if(event.keyCode ==13){
-			if(event.ctrlKey){
-				document.getElementById("messages").value+= '\r\n';
-				//alert("ctrl+enter换行！")
-			}else{
+	/* enter事件 */
+	$(window).keydown(function(event) {
+		if (event.keyCode == 13) {
+			if (event.ctrlKey) {
+				document.getElementById("messages").value += '\r\n';
+				/* alert("ctrl+enter换行！") */
+			} else {
 				send();
-				event.cancelBubble=true;
+				event.cancelBubble = true;
 				event.preventDefault();
 				event.stopPropagation();
 			}
 		}
 	});
 
-	function	printMessage(message){
-		var	mineMsg	=	'<li class="layim-chat-mine">'
-					+	'<div class="layim-chat-user"> <img src="/layui/images/img/tu2.png">'
-					+	'<cite><i>'
-					+	getNowFormatDate()
-					+	'</i>707</cite> </div>'
-					+	'<div class="layim-chat-text">'
-					+	message
-					+	'</div>'
-					+	'</li>';
+	function printMessage(message) {
+		var mineMsg = '<li class="layim-chat-mine">'
+				+ '<div class="layim-chat-user"> <img src="/layui/images/img/tu2.png">'
+				+ '<cite><i>' + getNowFormatDate() + '</i>707</cite> </div>'
+				+ '<div class="layim-chat-text">' + message + '</div>'
+				+ '</li>';
 		$("#printMsg ul").append(mineMsg);
 		new_news();
 	}
-	
-	function	printUserMessage(json){
-		var	userMsg	=	'<li>'
-					+	'<div class="layim-chat-user"> <img src="'
+
+	function printUserMessage(json) {
+		var userMsg = '<li>'
+				+ '<div class="layim-chat-user"> <img src="'
 					+	photoUrl
 					+	'"> <cite class="layim-chat-user-cite">'
-					+	json.userName
-					+	'<i>'
-					+	format(json.sendTime)
-					+	'</i> </cite> </div>'
-					+	'<div class="layim-chat-user-text">'
-					+	json.content
-					+	'</div></li>'
+				+ json.userName + '<i>' + format(json.sendTime)
+				+ '</i> </cite> </div>' + '<div class="layim-chat-user-text">'
+				+ json.content + '</div></li>';
 		$("#printMsg ul").append(userMsg);
 		new_news();
 	}
-	//切换用户
-	function	switchUser(id){
-		tousername	=	'PFU'+id;
-		$(".chat-body").fadeToggle(1);
+	/* 切换用户 */
+	function switchUser(id) {
+		tousername = id;
+		/* $(".chat-body").fadeToggle(1); */
 	}
-    //发送图片
-    function selectImg(pic) {
-        if (!pic.files || !pic.files[0]) {
-            return;
-        }
-        var reader = new FileReader();
-        reader.onload = function (evt) {
-            var images = evt.target.result;
-            console.log(room)
-            console.log(seat)
-    		var	res	=	customerSendImg(images.substr(images.indexOf(',') + 1));
-    		if(res.res==0){
-    			printUserImage(images);
-    		}
-        };
-        reader.readAsDataURL(pic.files[0]);
+	/* 发送图片 */
+	function selectImg(pic) {
+		if (!pic.files || !pic.files[0]) {
+			return;
+		}
+		var reader = new FileReader();
+		reader.onload = function(evt) {
+			var images = evt.target.result;
+			console.log(room);
+			console.log(seat);
+			var res = customerSendImg(images.substr(images.indexOf(',') + 1));
+			if (res.res == 0) {
+				printUserImage(images);
+			}
+		};
+		reader.readAsDataURL(pic.files[0]);
 
-    }
-    function	printUserImage(images){
-    	var	mineMsg	=	'<li class="layim-chat-mine">'
-					+	'<div class="layim-chat-user"> <img src="/layui/images/img/tu2.png">'
-					+	'<cite><i>'
-					+	getNowFormatDate()
-					+	'</i>'
-					+	seat
-					+	'</cite> </div><div class="layim-chat-text">'
-					+	'<img src="'
+	}
+	function printUserImage(images) {
+		var mineMsg = '<li class="layim-chat-mine">'
+				+ '<div class="layim-chat-user"> <img src="/layui/images/img/tu2.png">'
+				+ '<cite><i>' + getNowFormatDate() + '</i>' + seat
+				+ '</cite> </div><div class="layim-chat-text">'
+				+ '<img src="'
 					+	images  
-					+	'"></div>'
-					+	'</li>';
+					+	'"></div>' + '</li>';
 		$("#printMsg ul").append(mineMsg);
 		new_news();
-    }
-    //查询待接入用户
-    queryPendingAccess();
-    function	queryPendingAccess(){
-    	$.ajax({
-			type: "POST", //GET或POST,
-			async:true, //默认设置为true，所有请求均为异步请求。
-			url: "/js/chatrooms/query_pending_access",
-			dataType: "json", //xml、html、script、jsonp、text
-			success: function(data) {
-				console.log("持久的待接入的")
-				console.log(data)
-				var	array	=	data.res;
-				if(array.length>0){
-					for(var	i=0;i<array.length;i++){
-						var result = '<dd class="PFU'+array[i]+'"><a href="#"	onclick="jr(this.id)"	id="PFU'+array[i]+'">'+array[i]+'</a></dd>'
-						$("#djr").append(result)
-					}
-				}
-			},
-			error:function(){},
-		});
-    }
-    //展示最近的消息
-    function new_news(){
-    	var main_hei=$("#printMsg").height();
-    	$(".chat-main").scrollTop(main_hei);
-    	//setInterval(function(){
-    		//new_news()
-    	//},200)
-    }
+	}
+	/* 查询待接入用户 */
+	queryPendingAccess();
+	function queryPendingAccess() {
+		$
+				.ajax({
+					type : "POST",
+					async : true,
+					url : "/js/chatrooms/query_pending_access",
+					dataType : "json",
+					success : function(data) {
+						console.log("持久的待接入的");
+						console.log(data);
+						var array = data.res;
+						if (array.length > 0) {
+							for (var i = 0; i < array.length; i++) {
+								var result = '<dd class="PFU'+array[i]+'"><a href="#"	onclick="jr(this.id)"	id="PFU'
+										+ array[i]
+										+ '">'
+										+ array[i]
+										+ '</a></dd>';
+								$("#djr").append(result);
+							}
+						}
+					},
+					error : function() {
+					},
+				});
+	}
+	/* 展示最近的消息 */
+	function new_news() {
+		var main_hei = $("#printMsg").height();
+		$(".chat-main").scrollTop(main_hei);
+		/* setInterval(function(){
+			new_news()
+		},200) */
+	}
 </script>
 </body>
 </html>

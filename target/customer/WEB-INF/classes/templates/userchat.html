@@ -5,9 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>宠联网人工客服</title>
-<link rel="stylesheet" type="text/css" href="./userchat/css/layui.css">
+<link rel="stylesheet" type="text/css" href="./layui/css/layui.css">
+
 <link rel="stylesheet" type="text/css" href="./userchat/font_Icon/iconfont.css">
 <link rel="stylesheet" type="text/css" href="./userchat/css/chat.css">
+<link rel="stylesheet" type="text/css" href="./layui/css/modules/layer/default/layer.css">
 <style>
 	.chatBox-send{
 		width: 100%;
@@ -45,7 +47,7 @@
                 <div class="chat-return"	id="back">
 	                <i class="layui-icon layui-icon-return"></i>
                 </div>
-                <div class="chat-people">
+                <div class="chat-people"	id="chatPeople">
                     <div class="ChatInfoHead">
                         <img src="./layui/images/img/tu2.png" alt="头像">
                     </div>
@@ -94,8 +96,30 @@
 <p>
 </div>
 </div>
+
+
+<div	id="avgrate" style="margin-bottom: 1px;margin-left: 20px;">
+			<fieldset	id="username" class="layui-elem-field layui-field-title" style="margin-bottom: 1px;">
+			  
+			</fieldset>
+			<div id="test1">综合评分：<img alt="" src=""	id="logo"></div>
+			<div id="test2"></div>
+			<div>
+			    <div >
+			      <textarea placeholder="请输入评价" id="content"></textarea>
+			    </div>
+			</div>
+			<div >
+			    <div >
+			      <button class="layui-btn"	id="tjpj">提交</button>
+			    </div>
+			</div>
+</div>
+
 <script src="./userchat/js/jquery.min.js"></script>
+<script src="./js/base64.js"></script>
 <script src="./layui/layui.js"></script>
+<script src="./userchat/layer/layer.js"></script>
 <script src="./userchat/js/message.js"></script>
 <script src="./userchat/js/jquery.qqFace.js"></script>
 <script src="/webjars/sockjs-client/1.1.2/sockjs.min.js"></script>

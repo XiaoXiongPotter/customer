@@ -1,9 +1,10 @@
+	
 	function GetRequest() {  
 	   var url = location.search; //获取url中"?"符后的字串  
 	   var theRequest = new Object();  
 	   if (url.indexOf("?") != -1) {  
-	      var str = url.substr(1);  
-	      strs = str.split("&");  
+	      var str = url.substr(1); 
+	      strs = BASE64.decode(str).split("&");  
 	      for(var i = 0; i < strs.length; i ++) {  
 	         theRequest[strs[i].split("=")[0]]=unescape(strs[i].split("=")[1]);  
 	      }  
@@ -164,19 +165,13 @@
     return y+'-'+add0(m)+'-'+add0(d)+' '+add0(h)+':'+add0(mm)+':'+add0(s);
     }
 	function	alertInfo(content){
-		layui.use('layer', function(){
-			  var layer = layui.layer;
-			  layer.open({
-				  title: '提示',
-				  content: content
-				});  
+		layer.open({
+			  title: '提示',
+			  content: content
 			}); 
 	}
 	function	alertPrompt(content){
-		layui.use('layer', function(){
-			  var layer = layui.layer;
-			  layer.msg('<p style="color: #FFB800;">'+content+'</p>', {icon: 6}); 
-			});
+		layer.msg('<p style="color: #FFB800;">'+content+'</p>', {icon: 6}); 
 	}
 	
 	/*下拉刷新*/
@@ -382,4 +377,71 @@
         	$("#chatBox-content-demo").scrollTop($("#chatBox-content-demo")[0].scrollHeight);
     	});           	
     }
-	
+	$("#chatPeople").click(function(){
+		
+		var	name	=	$(this).context.innerText;
+		var	w	=	2*document.documentElement.clientWidth/3+'px';
+		var	h	=	document.documentElement.clientHeight/3+'px';
+		/*layer.open({
+			closeBtn: 0,
+			shadeClose: true,
+			title: '评价',
+			type: 2
+		    ,content: ['./layui/iframe/avgrate.html?name='+BASE64.encode(name)+'&petUser='+BASE64.encode(room), 'no']
+		    ,area: [w, h]
+		    ,fixed: false //不固定
+		    ,maxmin: false
+		    ,btn: ['提交']
+		    });*/
+		var	number	=	3;
+		layui.use(['rate'], function(){
+			  var rate = layui.rate;
+			  rate.render({
+			    elem: '#test2'
+			    ,value: number //初始值
+			    ,text: true //开启文本
+			    ,choose: function(value){
+			    	number	=	value;
+			    	console.log(number);
+			        if(value > 4) alertPrompt( '么么哒' );
+			      }
+			  });
+		});
+		$('#content').val("");
+		$('#avgrate').show();
+		layer.open({
+				shadeClose: true,
+				scrollbar: false,
+				title: '评价',
+				type: 1,
+				area: [w, h],
+				content: $('#avgrate'),
+				end: function(){
+					$('#avgrate').hide();
+					}
+			});
+		$("#username").html('<legend>'+name+'</legend>')
+		var	iw	=	2*document.documentElement.clientWidth/8+'px';
+		var	ih	=	0.2*document.documentElement.clientHeight/8+'px';
+		$("#logo").attr("src","/js/comments/getAvg?seat="+name+"");
+		$("#logo").css({width:iw,height:ih});
+		$("#tjpj").click(function(){
+			$.ajax({
+				type: "POST",
+				async:true,
+				url: "/js/comments/score",
+				data: {
+					seat: name,
+					fromPetUser: room,
+					content: $("#content").val(),
+					star: number
+				},
+				dataType: "text",
+				success: function(data) {
+					$('#avgrate').hide();
+					layer.closeAll();
+				},
+				error:function(){console.log("#tjpj.click")},
+			});
+		})
+	});

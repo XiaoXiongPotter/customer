@@ -102,7 +102,7 @@
 			<fieldset	id="username" class="layui-elem-field layui-field-title" style="margin-bottom: 1px;">
 			  
 			</fieldset>
-			<div id="test1"><img alt="" src=""	id="logo"></div>
+			<div id="test1">综合评分：<img alt="" src=""	id="logo"></div>
 			<div id="test2"></div>
 			<div>
 			    <div >
@@ -176,6 +176,7 @@
 	} /* 当收到消息后 */
 	websocket.onmessage = function(event) {
 		var data = JSON.parse(event.data);
+		console.log(data.data);
 		if(data.header.code == 6001) { /* console.log("线上客服"); */
 			kefuList = data.data;
 		} else if(data.header.code == 6003) { /* console.log("下线用户"); */ } else {
@@ -191,23 +192,28 @@
 	function getMessage(json) { /* 赋值坐席 */
 		seat = json.fromUser; /* 改变聊天头 */
 		$(".ChatInfoName").text(seat.substring(3)); /* 收到消息后更新消息为送达 */
-		$.ajax({
-			type: "POST",
-			async: false,
-			url: "/js/messageses/updateStatus",
-			data: {
-				sendTime: json.sendTime
-			},
-			dataType: "json",
-			success: function(data) { /* console.log("消息状态更新："); 根据消息状态进行拼接 */
-				if(data.res == "success") {
-					printKefuMessage(json);
-				}
-			},
-			error: function() {
-				console.log('getMessage')
-			},
-		});
+		if(json.msgId!=-100){
+			$.ajax({
+				type: "POST",
+				async: false,
+				url: "/js/messageses/updateStatus",
+				data: {
+					sendTime: json.sendTime
+				},
+				dataType: "json",
+				success: function(data) { /* console.log("消息状态更新："); 根据消息状态进行拼接 */
+					if(data.res == "success") {
+						printKefuMessage(json);
+					}
+				},
+				error: function() {
+					console.log('getMessage')
+				},
+			});
+		}else{
+			printKefuMessage(json);
+		}
+		
 	} /* 发送数据 */
 	function send() {
 		var content = $(".div-textarea").html().replace(/[\n\r]/g, '<br>');
